@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mr. Fitz — Digital Agency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Cormorant+Garamond:wght@300;400;600&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #0a0703;
+  --dark: #110e08;
+  --gold: #c9922a;
+  --gold-light: #e8b84b;
+  --cream: #f5efe6;
+  --cream-dark: #e8dece;
+  --red: #c0392b;
+  --white: #fdfaf5;
+  --text-muted: #8a7a60;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--black); color: var(--white); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+
+/* ─── NAVBAR ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 60px; height: 80px;
+  background: rgba(10,7,3,0.92); backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(201,146,42,0.15);
+}
+.logo {
+  font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 4px;
+  color: var(--gold); text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
+}
+.logo img { width: 42px; height: 42px; object-fit: cover; border-radius: 50%; border: 2px solid var(--gold); }
+.logo span { color: var(--white); }
+.nav-links { display: flex; gap: 40px; list-style: none; }
+.nav-links a { color: var(--cream-dark); text-decoration: none; font-size: 0.75rem; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 500; transition: color 0.3s; }
+.nav-links a:hover { color: var(--gold); }
+.nav-right { display: flex; align-items: center; gap: 24px; }
+.nav-phone { font-size: 0.75rem; letter-spacing: 1px; color: var(--text-muted); font-family: 'Cormorant Garamond', serif; font-style: italic; }
+.btn-book { background: var(--gold); color: var(--black); border: none; padding: 12px 28px; font-size: 0.7rem; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.3s, transform 0.2s; text-decoration: none; display: inline-block; }
+.btn-book:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+/* ─── HERO ─── */
+#hero { position: relative; width: 100vw; height: 100vh; background: var(--black); overflow: hidden; display: flex; align-items: center; }
+
+#canvas-container { position: absolute; right: 0; top: 0; width: 60%; height: 100%; z-index: 1; }
+
+/* ── model-viewer fills the container, background is transparent ── */
+#pizza-model {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  --poster-color: transparent;
+}
+
+.hero-content { position: relative; z-index: 10; padding-left: 80px; max-width: 620px; }
+.hero-badge { display: inline-flex; align-items: center; gap: 10px; border: 1px solid rgba(201,146,42,0.4); padding: 8px 20px; font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); font-family: 'DM Sans', sans-serif; margin-bottom: 28px; }
+.hero-badge::before { content: ''; width: 6px; height: 6px; background: var(--gold); border-radius: 50%; }
+.hero-price-tag { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--gold-light); font-style: italic; letter-spacing: 1px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+.hero-price-tag::before { content: ''; width: 40px; height: 1px; background: var(--gold); }
+.hero-title { font-family: 'Playfair Display', serif; font-size: clamp(3.5rem, 6vw, 6rem); font-weight: 900; line-height: 1; text-transform: uppercase; color: var(--white); margin-bottom: 10px; }
+.hero-title .accent { color: var(--gold); display: block; font-style: italic; }
+.hero-subtitle { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; color: var(--text-muted); line-height: 1.8; margin: 28px 0 48px; max-width: 400px; font-weight: 300; }
+.hero-ctas { display: flex; gap: 16px; align-items: center; }
+.btn-primary { background: var(--gold); color: var(--black); border: none; padding: 16px 36px; font-size: 0.72rem; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
+.btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+.btn-primary::after { content: '→'; font-size: 1rem; }
+.btn-secondary { color: var(--cream-dark); text-decoration: none; font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; transition: color 0.3s; }
+.btn-secondary:hover { color: var(--gold); }
+.btn-secondary::before { content: ''; width: 32px; height: 1px; background: currentColor; transition: width 0.3s; }
+.btn-secondary:hover::before { width: 50px; }
+.price-badge { position: absolute; bottom: 18%; right: 38%; background: var(--red); color: var(--white); padding: 18px 24px; text-align: center; z-index: 15; clip-path: polygon(8% 0%,92% 0%,100% 8%,100% 92%,92% 100%,8% 100%,0% 92%,0% 8%); animation: floatBadge 3s ease-in-out infinite; }
+.price-badge .only { font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; opacity: 0.85; }
+.price-badge .amount { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; line-height: 1; color: var(--white); }
+@keyframes floatBadge { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+.scroll-indicator { position: absolute; bottom: 40px; left: 80px; z-index: 10; display: flex; align-items: center; gap: 12px; color: var(--text-muted); font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; }
+.scroll-line { width: 48px; height: 1px; background: var(--gold); position: relative; overflow: hidden; }
+.scroll-line::after { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: var(--white); animation: scanLine 2s ease-in-out infinite; }
+@keyframes scanLine { 0%{left:-100%} 100%{left:100%} }
+.hero-vignette { position: absolute; top: 0; left: 0; width: 55%; height: 100%; background: linear-gradient(90deg, var(--black) 40%, transparent); z-index: 5; pointer-events: none; }
+
+/* ─── TICKER ─── */
+.ticker-wrap { background: var(--gold); padding: 14px 0; overflow: hidden; position: relative; }
+.ticker { display: flex; white-space: nowrap; animation: ticker 25s linear infinite; width: max-content; }
+.ticker span { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; letter-spacing: 4px; color: var(--black); padding: 0 40px; }
+.ticker span.dot { color: rgba(0,0,0,0.4); padding: 0; }
+@keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+/* ─── SPECIAL DEAL ─── */
+#special-deal { background: var(--dark); padding: 100px 80px; display: flex; align-items: center; justify-content: space-between; gap: 60px; position: relative; overflow: hidden; }
+#special-deal::before { content: 'OFFER'; position: absolute; left: -20px; top: 50%; transform: translateY(-50%); font-family: 'Bebas Neue', sans-serif; font-size: 18rem; color: rgba(255,255,255,0.03); line-height: 1; pointer-events: none; }
+.deal-text { flex: 1; }
+.deal-eyebrow { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.5rem; color: var(--gold); margin-bottom: 12px; }
+.deal-title { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem,4vw,4rem); font-weight: 900; text-transform: uppercase; line-height: 1.05; margin-bottom: 20px; }
+.deal-price-line { font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; font-weight: 600; }
+.deal-price-line strong { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 1px; }
+.deal-desc { font-family: 'Cormorant Garamond', serif; color: var(--text-muted); font-size: 1.1rem; line-height: 1.7; margin-bottom: 36px; max-width: 380px; }
+.deal-image-wrapper { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; }
+.deal-image-wrapper img { width: 100%; max-width: 520px; object-fit: cover; border-radius: 2px; }
+.deal-stamp { position: absolute; bottom: -10px; right: 20px; background: var(--gold); color: var(--black); width: 110px; height: 110px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; animation: floatBadge 3s ease-in-out infinite; }
+.deal-stamp .only { font-size: 0.7rem; letter-spacing: 1px; }
+.deal-stamp .price { font-size: 2rem; line-height: 1; }
+
+/* ─── ABOUT / CATEGORIES ─── */
+#about-categories { background: var(--white); padding: 80px 0 0; color: var(--black); }
+.about-section { display: flex; align-items: center; gap: 80px; padding: 0 80px 80px; }
+.about-image-ring { position: relative; flex-shrink: 0; width: 280px; height: 280px; }
+.about-image-ring img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid var(--gold); }
+.ring-decoration { position: absolute; inset: -16px; border-radius: 50%; border: 1px dashed var(--gold); animation: spin 20s linear infinite; }
+@keyframes spin { to{transform:rotate(360deg)} }
+.quality-badge { position: absolute; bottom: -10px; right: -10px; background: var(--red); color: var(--white); width: 80px; height: 80px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.55rem; letter-spacing: 1.5px; text-align: center; text-transform: uppercase; font-weight: 700; line-height: 1.3; }
+.about-text { flex: 1; }
+.section-eyebrow { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--red); font-weight: 700; margin-bottom: 16px; }
+.about-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem,3vw,2.6rem); font-weight: 700; line-height: 1.2; margin-bottom: 20px; color: var(--black); }
+.about-desc { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: #5a4e3a; line-height: 1.8; margin-bottom: 32px; }
+.about-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+.btn-outline-dark { border: 2px solid var(--black); color: var(--black); padding: 12px 28px; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; text-decoration: none; transition: all 0.3s; }
+.btn-outline-dark:hover { background: var(--black); color: var(--white); }
+.btn-outline-gold { border: 2px solid var(--gold); color: var(--gold); padding: 12px 28px; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; text-decoration: none; transition: all 0.3s; }
+.btn-outline-gold:hover { background: var(--gold); color: var(--black); }
+.about-features { display: flex; gap: 40px; margin-top: 32px; }
+.feature-icon { font-size: 1.4rem; margin-bottom: 8px; }
+.feature-title { font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; color: var(--black); margin-bottom: 4px; }
+.feature-desc { font-size: 0.8rem; color: #7a6a52; line-height: 1.5; }
+.categories-strip { display: grid; grid-template-columns: repeat(5,1fr); }
+.category-card { position: relative; aspect-ratio: 4/5; overflow: hidden; cursor: pointer; }
+.category-card:nth-child(odd) { background: #c0392b; }
+.category-card:nth-child(even) { background: #d4a017; }
+.category-bg-text { position: absolute; bottom: 0; left: 0; right: 0; font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; color: rgba(0,0,0,0.25); text-align: center; letter-spacing: 4px; line-height: 1; padding-bottom: 60px; white-space: nowrap; }
+.category-bg-text .line2 { display: block; }
+.category-logo { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1rem; color: rgba(255,255,255,0.8); white-space: nowrap; }
+.cat-badge { position: absolute; top: 50px; right: 16px; background: rgba(255,255,255,0.9); color: var(--red); font-size: 0.6rem; font-weight: 700; letter-spacing: 1px; padding: 4px 8px; text-transform: uppercase; }
+.category-image { position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); width: 140px; height: 140px; object-fit: cover; border-radius: 50%; transition: transform 0.4s ease; }
+.category-card:hover .category-image { transform: translateX(-50%) scale(1.1) translateY(-8px); }
+.category-name { position: absolute; bottom: 28px; left: 0; right: 0; text-align: center; font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 3px; color: var(--white); }
+.category-link { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); font-size: 0.55rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.7); white-space: nowrap; }
+
+/* ─── MENU ─── */
+#menu { background: var(--white); padding: 100px 80px; color: var(--black); }
+.section-header { text-align: center; margin-bottom: 70px; }
+.section-header .eyebrow { font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; color: var(--red); font-weight: 700; margin-bottom: 16px; }
+.section-header h2 { font-family: 'Playfair Display', serif; font-size: clamp(2rem,4vw,3.5rem); font-weight: 900; text-transform: uppercase; line-height: 1.1; }
+.menu-tabs-bar { display: flex; justify-content: center; gap: 0; margin-bottom: 50px; border-bottom: 2px solid #e8dece; }
+.menu-tab-btn { background: none; border: none; padding: 14px 36px; font-size: 0.72rem; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 700; font-family: 'DM Sans', sans-serif; color: #9a8a6a; cursor: pointer; position: relative; transition: color 0.3s; }
+.menu-tab-btn::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 2px; background: var(--red); transform: scaleX(0); transition: transform 0.3s; }
+.menu-tab-btn.active { color: var(--black); }
+.menu-tab-btn.active::after { transform: scaleX(1); }
+.menu-tab-btn:hover { color: var(--black); }
+.menu-panel { display: none; }
+.menu-panel.active { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
+.menu-column { border: 1px solid #e8dece; padding: 0; }
+.menu-item { padding: 22px 28px; border-bottom: 1px dashed #d4c9b3; transition: background 0.2s; }
+.menu-item:last-child { border-bottom: none; }
+.menu-item:hover { background: #fdf8f2; }
+.menu-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.menu-item-name { font-size: 0.78rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; color: var(--black); }
+.menu-item-price { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: var(--red); letter-spacing: 1px; }
+.menu-item-desc { font-family: 'Cormorant Garamond', serif; font-size: 0.95rem; color: #7a6a52; line-height: 1.5; }
+
+/* ─── REVIEWS ─── */
+#reviews { background: var(--dark); padding: 100px 80px; position: relative; overflow: hidden; }
+#reviews::before { content: '"'; position: absolute; top: -40px; left: 40px; font-family: 'Playfair Display', serif; font-size: 30rem; color: rgba(201,146,42,0.05); line-height: 1; pointer-events: none; }
+.reviews-header { text-align: center; margin-bottom: 70px; }
+.reviews-header .eyebrow { font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-bottom: 16px; }
+.reviews-header h2 { font-family: 'Playfair Display', serif; font-size: clamp(2rem,4vw,3.2rem); font-weight: 700; color: var(--white); }
+.reviews-carousel-wrap { position: relative; overflow: hidden; }
+.reviews-track { display: flex; transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94); }
+.review-card { flex: 0 0 calc(33.333% - 16px); margin-right: 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(201,146,42,0.15); padding: 40px 36px; position: relative; transition: border-color 0.3s, transform 0.3s; }
+.review-card:hover { border-color: rgba(201,146,42,0.5); transform: translateY(-6px); }
+.review-stars { color: var(--gold); font-size: 1.1rem; letter-spacing: 2px; margin-bottom: 20px; }
+.review-text { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; line-height: 1.8; color: var(--cream-dark); margin-bottom: 28px; font-style: italic; }
+.review-author { display: flex; align-items: center; gap: 14px; }
+.review-avatar { width: 48px; height: 48px; border-radius: 50%; background: rgba(201,146,42,0.2); border: 1px solid rgba(201,146,42,0.3); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--gold); font-weight: 700; }
+.review-name { font-weight: 600; font-size: 0.88rem; color: var(--white); margin-bottom: 2px; }
+.review-role { font-size: 0.72rem; color: var(--text-muted); letter-spacing: 1px; }
+.carousel-controls { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 48px; }
+.carousel-btn { width: 52px; height: 52px; border: 1px solid rgba(201,146,42,0.3); background: none; color: var(--gold); font-size: 1.2rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; }
+.carousel-btn:hover { background: var(--gold); color: var(--black); }
+.carousel-dots { display: flex; gap: 8px; }
+.carousel-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(201,146,42,0.3); cursor: pointer; transition: all 0.3s; border: none; }
+.carousel-dot.active { background: var(--gold); width: 24px; border-radius: 4px; }
+
+/* ─── GALLERY ─── */
+#gallery-section { background: var(--black); padding: 100px 80px; }
+.gallery-header { text-align: center; margin-bottom: 60px; }
+.gallery-header .eyebrow { font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); font-weight: 700; margin-bottom: 16px; }
+.gallery-header h2 { font-family: 'Playfair Display', serif; font-size: clamp(2rem,4vw,3rem); font-weight: 900; color: var(--white); text-transform: uppercase; }
+.gallery-filter-bar { display: flex; justify-content: center; gap: 12px; margin-bottom: 48px; flex-wrap: wrap; }
+.gf-btn { background: none; border: 1px solid rgba(201,146,42,0.3); color: var(--text-muted); padding: 9px 24px; font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 600; transition: all 0.3s; }
+.gf-btn:hover, .gf-btn.active { background: var(--gold); border-color: var(--gold); color: var(--black); }
+.gallery-masonry { display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows: repeat(2,260px); gap: 6px; }
+.gallery-item { overflow: hidden; position: relative; cursor: pointer; }
+.gallery-item:first-child { grid-column: span 2; }
+.gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94); filter: brightness(0.8) saturate(0.9); }
+.gallery-item:hover img { transform: scale(1.08); filter: brightness(1) saturate(1.1); }
+.gallery-overlay { position: absolute; inset: 0; background: linear-gradient(to top,rgba(10,7,3,0.8) 0%,rgba(201,146,42,0.1) 100%); display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end; padding: 28px; opacity: 0; transition: opacity 0.4s; }
+.gallery-item:hover .gallery-overlay { opacity: 1; }
+.gallery-overlay-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 3px; color: var(--white); margin-bottom: 4px; }
+.gallery-overlay-sub { font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); font-weight: 600; }
+.gallery-zoom-icon { position: absolute; top: 16px; right: 16px; width: 40px; height: 40px; background: var(--gold); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; opacity: 0; transform: scale(0.7); transition: all 0.3s 0.05s; }
+.gallery-item:hover .gallery-zoom-icon { opacity: 1; transform: scale(1); }
+#lightbox { position: fixed; inset: 0; background: rgba(10,7,3,0.97); z-index: 9000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s; }
+#lightbox.open { opacity: 1; pointer-events: all; }
+#lightbox img { max-width: 85vw; max-height: 85vh; object-fit: contain; border: 1px solid rgba(201,146,42,0.3); }
+.lb-close { position: absolute; top: 24px; right: 32px; background: none; border: 1px solid rgba(201,146,42,0.4); color: var(--gold); font-size: 1.4rem; width: 48px; height: 48px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+.lb-close:hover { background: var(--gold); color: var(--black); }
+.lb-nav { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: 1px solid rgba(201,146,42,0.3); color: var(--gold); font-size: 1.4rem; width: 56px; height: 56px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+.lb-nav:hover { background: var(--gold); color: var(--black); }
+.lb-prev { left: 32px; }
+.lb-next { right: 32px; }
+.lb-caption { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--cream-dark); letter-spacing: 1px; font-style: italic; text-align: center; }
+
+/* ─── STATS ─── */
+#stats { background: var(--gold); padding: 70px 80px; display: grid; grid-template-columns: repeat(4,1fr); gap: 0; position: relative; overflow: hidden; }
+#stats::before { content: '★'; position: absolute; right: -40px; top: -60px; font-size: 20rem; color: rgba(0,0,0,0.06); pointer-events: none; font-family: serif; }
+.stat-item { text-align: center; padding: 24px; border-right: 1px solid rgba(0,0,0,0.15); cursor: default; transition: background 0.3s; }
+.stat-item:last-child { border-right: none; }
+.stat-item:hover { background: rgba(0,0,0,0.06); }
+.stat-number { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; line-height: 1; color: var(--black); margin-bottom: 8px; transition: transform 0.3s; }
+.stat-item:hover .stat-number { transform: scale(1.08); }
+.stat-label { font-size: 0.72rem; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(0,0,0,0.55); font-weight: 700; }
+.stat-icon { font-size: 1.6rem; margin-bottom: 10px; }
+
+/* ─── RESERVATION ─── */
+#reservation { background: var(--dark); padding: 80px; display: flex; align-items: center; justify-content: space-between; gap: 60px; border-top: 1px solid rgba(201,146,42,0.15); border-bottom: 1px solid rgba(201,146,42,0.15); }
+.res-text .eyebrow { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; font-weight: 700; }
+.res-text h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem,3vw,2.8rem); font-weight: 700; color: var(--white); margin-bottom: 10px; }
+.res-text p { font-family: 'Cormorant Garamond', serif; color: var(--text-muted); font-size: 1.1rem; line-height: 1.7; }
+.res-form { display: flex; flex-wrap: wrap; gap: 12px; flex: 1; justify-content: flex-end; }
+.res-input { background: rgba(255,255,255,0.05); border: 1px solid rgba(201,146,42,0.25); color: var(--white); padding: 14px 20px; font-size: 0.82rem; font-family: 'DM Sans', sans-serif; outline: none; width: 180px; transition: border-color 0.3s, background 0.3s; }
+.res-input:focus { border-color: var(--gold); background: rgba(201,146,42,0.07); }
+.res-input::placeholder { color: var(--text-muted); }
+.res-submit { background: var(--gold); color: var(--black); border: none; padding: 14px 32px; font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.3s; }
+.res-submit:hover { background: var(--gold-light); transform: translateY(-2px); }
+
+/* ─── FOOTER ─── */
+footer { background: var(--black); padding: 80px; border-top: 1px solid rgba(201,146,42,0.2); }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 60px; margin-bottom: 60px; }
+.footer-brand .logo { font-size: 2.2rem; display: block; margin-bottom: 16px; }
+.footer-desc { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 24px; }
+.footer-socials { display: flex; gap: 12px; }
+.social-btn { width: 40px; height: 40px; border: 1px solid rgba(201,146,42,0.3); display: flex; align-items: center; justify-content: center; color: var(--gold); text-decoration: none; font-size: 0.85rem; transition: all 0.3s; }
+.social-btn:hover { background: var(--gold); color: var(--black); }
+.footer-col h4 { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 24px; font-weight: 700; }
+.footer-col ul { list-style: none; }
+.footer-col ul li { margin-bottom: 12px; }
+.footer-col ul a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s, padding-left 0.3s; font-family: 'Cormorant Garamond', serif; display: inline-block; }
+.footer-col ul a:hover { color: var(--gold); padding-left: 6px; }
+.footer-contact-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+.contact-icon { color: var(--gold); font-size: 1rem; margin-top: 2px; }
+.contact-text { font-family: 'Cormorant Garamond', serif; color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; }
+.footer-bottom { border-top: 1px solid rgba(201,146,42,0.1); padding-top: 30px; display: flex; justify-content: space-between; align-items: center; }
+.footer-bottom p { font-size: 0.75rem; color: var(--text-muted); font-family: 'Cormorant Garamond', serif; }
+
+/* ─── HAMBURGER & MOBILE DRAWER (global, shown only on mobile) ─── */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--gold);
+  transition: all 0.3s;
+}
+.mobile-drawer {
+  position: fixed;
+  top: 0; right: -100%;
+  width: min(320px, 85vw);
+  height: 100%;
+  background: var(--dark);
+  z-index: 2000;
+  padding: 80px 40px 40px;
+  border-left: 1px solid rgba(201,146,42,0.2);
+  transition: right 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.mobile-drawer.open { right: 0; }
+.mobile-drawer ul { list-style: none; display: flex; flex-direction: column; gap: 0; }
+.mobile-drawer ul li { border-bottom: 1px solid rgba(201,146,42,0.1); }
+.mobile-drawer ul a {
+  display: block;
+  padding: 18px 0;
+  color: var(--cream-dark);
+  text-decoration: none;
+  font-size: 0.85rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 600;
+  transition: color 0.3s, padding-left 0.3s;
+}
+.mobile-drawer ul a:hover { color: var(--gold); padding-left: 8px; }
+.drawer-close {
+  position: absolute;
+  top: 20px; right: 20px;
+  background: none;
+  border: 1px solid rgba(201,146,42,0.3);
+  color: var(--gold);
+  width: 40px; height: 40px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+}
+.drawer-phone {
+  margin-top: auto;
+  padding-top: 30px;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 1999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s;
+}
+.drawer-overlay.open { opacity: 1; pointer-events: all; }
+
+/* ═══════════════════════════════════════════════
+   MOBILE RESPONSIVE  ≤ 768px
+═══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* ── NAVBAR ── */
+  nav {
+    padding: 0 20px;
+    height: 64px;
+  }
+  .nav-links, .nav-phone { display: none; }
+  .hamburger { display: flex; }
+  .btn-book { padding: 10px 18px; font-size: 0.65rem; letter-spacing: 1.5px; }
+  .logo { font-size: 1.5rem; letter-spacing: 2px; }
+  .logo img { width: 34px; height: 34px; }
+
+  /* ── HERO ── */
+  #hero {
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 100svh;
+    min-height: 600px;
+  }
+  #canvas-container {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 55%;
+    z-index: 1;
+  }
+  .hero-vignette {
+    width: 100%;
+    background: linear-gradient(180deg, transparent 30%, var(--black) 80%);
+  }
+  .hero-content {
+    position: relative;
+    z-index: 10;
+    padding: 0 24px 40px;
+    max-width: 100%;
+    width: 100%;
+  }
+  .hero-badge { font-size: 0.6rem; padding: 6px 14px; margin-bottom: 16px; }
+  .hero-price-tag { font-size: 0.95rem; margin-bottom: 10px; }
+  .hero-title { font-size: clamp(2.4rem, 10vw, 3.5rem); }
+  .hero-subtitle { font-size: 0.95rem; margin: 16px 0 28px; max-width: 100%; }
+  .hero-ctas { flex-wrap: wrap; gap: 12px; }
+  .btn-primary { padding: 14px 24px; font-size: 0.68rem; }
+  .price-badge { bottom: auto; top: 48%; right: 16px; padding: 12px 16px; }
+  .price-badge .amount { font-size: 1.5rem; }
+  .scroll-indicator { display: none; }
+
+  /* ── TICKER ── */
+  .ticker span { padding: 0 20px; font-size: 0.85rem; }
+
+  /* ── SPECIAL DEAL ── */
+  #special-deal {
+    flex-direction: column;
+    padding: 60px 24px;
+    gap: 40px;
+    text-align: center;
+  }
+  .deal-desc { max-width: 100%; }
+  .deal-image-wrapper img { border-radius: 6px; }
+  .deal-stamp { right: 50%; transform: translateX(50%); bottom: -20px; }
+
+  /* ── ABOUT ── */
+  #about-categories { padding: 60px 0 0; }
+  .about-section {
+    flex-direction: column;
+    padding: 0 24px 60px;
+    gap: 40px;
+    text-align: center;
+  }
+  .about-image-ring { width: 200px; height: 200px; margin: 0 auto; }
+  .about-btns { justify-content: center; }
+  .about-features { flex-direction: column; gap: 24px; align-items: center; }
+
+  /* ── CATEGORIES STRIP ── */
+  .categories-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .categories-strip .category-card:last-child {
+    grid-column: span 2;
+  }
+  .category-image { width: 100px; height: 100px; }
+  .category-bg-text { font-size: 2.5rem; }
+
+  /* ── MENU ── */
+  #menu { padding: 60px 20px; }
+  .section-header { margin-bottom: 40px; }
+  .menu-tabs-bar {
+    overflow-x: auto;
+    justify-content: flex-start;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .menu-tabs-bar::-webkit-scrollbar { display: none; }
+  .menu-tab-btn { padding: 12px 20px; font-size: 0.65rem; white-space: nowrap; }
+  .menu-panel.active { grid-template-columns: 1fr; }
+  .menu-item { padding: 16px 20px; }
+
+  /* ── REVIEWS ── */
+  #reviews { padding: 60px 20px; }
+  #reviews::before { font-size: 10rem; }
+  .review-card {
+    flex: 0 0 85vw;
+    margin-right: 16px;
+    padding: 28px 22px;
+  }
+  .reviews-track { padding-bottom: 8px; }
+
+  /* ── GALLERY ── */
+  #gallery-section { padding: 60px 20px; }
+  .gallery-masonry {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    gap: 4px;
+  }
+  .gallery-item:first-child { grid-column: span 2; }
+  .gallery-masonry { grid-template-rows: 180px 180px 180px; }
+
+  /* ── STATS ── */
+  #stats {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 40px 20px;
+  }
+  .stat-item { border-right: none; border-bottom: 1px solid rgba(0,0,0,0.15); padding: 20px 10px; }
+  .stat-item:nth-child(1), .stat-item:nth-child(2) { border-bottom: 1px solid rgba(0,0,0,0.15); }
+  .stat-item:nth-child(3), .stat-item:nth-child(4) { border-bottom: none; }
+  .stat-item:nth-child(odd) { border-right: 1px solid rgba(0,0,0,0.15); }
+  .stat-number { font-size: 3rem; }
+
+  /* ── RESERVATION ── */
+  #reservation {
+    flex-direction: column;
+    padding: 60px 24px;
+    gap: 36px;
+    text-align: center;
+  }
+  .res-form { justify-content: center; }
+  .res-input { width: 100%; }
+  .res-submit { width: 100%; }
+
+  /* ── FOOTER ── */
+  footer { padding: 50px 24px 30px; }
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  /* ── LIGHTBOX ── */
+  .lb-prev { left: 10px; width: 40px; height: 40px; }
+  .lb-next { right: 10px; width: 40px; height: 40px; }
+  .lb-close { top: 12px; right: 12px; }
+  #lightbox img { max-width: 95vw; max-height: 70vh; }
+}
+
+/* ═══════════════════════════════════════════════
+   TABLET  769px – 1024px
+═══════════════════════════════════════════════ */
+@media (min-width: 769px) and (max-width: 1024px) {
+  nav { padding: 0 32px; }
+  .nav-links { gap: 20px; }
+  .nav-phone { display: none; }
+
+  #hero { align-items: center; }
+  #canvas-container { width: 50%; }
+  .hero-content { padding-left: 40px; max-width: 480px; }
+
+  #special-deal { padding: 70px 40px; gap: 40px; }
+
+  .about-section { padding: 0 40px 60px; gap: 40px; }
+  .about-image-ring { width: 220px; height: 220px; }
+  .categories-strip { grid-template-columns: repeat(3, 1fr); }
+  .categories-strip .category-card:nth-child(4),
+  .categories-strip .category-card:nth-child(5) { grid-column: span 1; }
+
+  #menu { padding: 80px 40px; }
+  .menu-tab-btn { padding: 12px 22px; }
+
+  #reviews { padding: 80px 40px; }
+  .review-card { flex: 0 0 calc(50% - 12px); }
+
+  #gallery-section { padding: 80px 40px; }
+
+  #stats { padding: 60px 40px; }
+
+  #reservation { padding: 60px 40px; }
+  .res-input { width: 160px; }
+
+  footer { padding: 60px 40px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+}
+
+/* ─── LOADER ─── */
+#loader { position: fixed; inset: 0; background: var(--black); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; transition: opacity 0.8s ease; }
+.loader-logo { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 8px; color: var(--gold); }
+.loader-bar-wrap { width: 200px; height: 2px; background: rgba(201,146,42,0.2); }
+.loader-bar { height: 100%; background: var(--gold); width: 0%; animation: loadBar 1.5s ease forwards; }
+@keyframes loadBar { to{width:100%} }
+
+/* ─── REVEAL ─── */
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo">MR. FITZ</div>
+  <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo"><img src="logo.jpeg" alt="Mr. Fitz Logo">MR. <span>FITZ</span></a>
+  <ul class="nav-links">
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#menu">Services</a></li>
+    <li><a href="#about-categories">About</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#gallery-section">Portfolio</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="nav-phone">📞 CALL: +880 123 456 88</div>
+    <a href="#menu" class="btn-book">Get a Quote →</a>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Menu Drawer -->
+<div class="mobile-drawer" id="mobileDrawer">
+  <button class="drawer-close" id="drawerClose">✕</button>
+  <ul>
+    <li><a href="#hero"             onclick="closeDrawer()">Home</a></li>
+    <li><a href="#menu"             onclick="closeDrawer()">Services</a></li>
+    <li><a href="#about-categories" onclick="closeDrawer()">About</a></li>
+    <li><a href="#reviews"          onclick="closeDrawer()">Reviews</a></li>
+    <li><a href="#gallery-section"  onclick="closeDrawer()">Portfolio</a></li>
+    <li><a href="#contact"          onclick="closeDrawer()">Contact</a></li>
+  </ul>
+  <div class="drawer-phone">📞 +880 123 456 88</div>
+</div>
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-vignette"></div>
+
+  <div id="canvas-container">
+    <model-viewer
+      id="pizza-model"
+      src="car.glb"
+      alt="3D Digital Model"
+      auto-rotate
+      auto-rotate-delay="0"
+      rotation-per-second="30deg"
+      camera-controls
+      disable-zoom
+      shadow-intensity="1"
+      exposure="1.2"
+      environment-image="neutral"
+    ></model-viewer>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-badge">💻 Award-Winning Agency Since 2005</div>
+    <div class="hero-price-tag">Projects Starting From $999</div>
+    <h1 class="hero-title">
+      We Build<br>
+      <span class="accent">Digital</span>
+      Futures
+    </h1>
+    <p class="hero-subtitle">Welcome to our creative studio, where bold ideas meet flawless execution. We craft websites, apps, and digital experiences that move businesses forward.</p>
+    <div class="hero-ctas">
+      <a href="#menu" class="btn-primary">View Our Services</a>
+      <a href="#about-categories" class="btn-secondary">Our Story</a>
+    </div>
+  </div>
+
+  <div class="price-badge">
+    <div class="only">Starting</div>
+    <div class="amount">$999</div>
+  </div>
+
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span>WEB DEVELOPMENT</span><span class="dot">✦</span>
+    <span>MOBILE APPS</span><span class="dot">✦</span>
+    <span>UI / UX DESIGN</span><span class="dot">✦</span>
+    <span>DIGITAL STRATEGY</span><span class="dot">✦</span>
+    <span>CLOUD SOLUTIONS</span><span class="dot">✦</span>
+    <span>SEO & GROWTH</span><span class="dot">✦</span>
+    <span>WEB DEVELOPMENT</span><span class="dot">✦</span>
+    <span>MOBILE APPS</span><span class="dot">✦</span>
+    <span>UI / UX DESIGN</span><span class="dot">✦</span>
+    <span>DIGITAL STRATEGY</span><span class="dot">✦</span>
+    <span>CLOUD SOLUTIONS</span><span class="dot">✦</span>
+    <span>SEO & GROWTH</span><span class="dot">✦</span>
+  </div>
+</div>
+
+<!-- SPECIAL DEAL / FEATURED OFFER -->
+<section id="special-deal">
+  <div class="deal-text reveal">
+    <div class="deal-eyebrow">Limited Time</div>
+    <h2 class="deal-title">Launch Package<br>For New Businesses</h2>
+    <div class="deal-price-line">COMPLETE STARTER WEBSITE ONLY <strong>$999</strong></div>
+    <p class="deal-desc">Get a fully custom, mobile-first website with up to 10 pages, SEO setup, and 30 days of post-launch support — everything you need to go live fast.</p>
+    <a href="#menu" class="btn-primary">Claim This Offer</a>
+  </div>
+  <div class="deal-image-wrapper reveal">
+    <img src="food2.jpeg" alt="Launch Package" style="border-radius:8px;">
+    <div class="deal-stamp"><div class="only">ONLY</div><div class="price">$999</div></div>
+  </div>
+</section>
+
+<!-- ABOUT + CATEGORIES -->
+<section id="about-categories">
+  <div class="about-section reveal">
+    <div class="about-image-ring">
+      <img src="food3.jpeg" alt="Our Team">
+      <div class="ring-decoration"></div>
+      <div class="quality-badge">Top<br>Rated<br>★★★</div>
+    </div>
+    <div class="about-text">
+      <div class="section-eyebrow">Learn About Mr. Fitz</div>
+      <h2 class="about-title">Innovative & Reliable Digital<br>Solutions For Your Business</h2>
+      <p class="about-desc">Welcome to Mr. Fitz Digital, where cutting-edge technology meets strategic creativity. Nestled at the intersection of design and engineering, we help brands thrive in the digital age.</p>
+      <div class="about-btns">
+        <a href="#" class="btn-outline-dark">Learn More →</a>
+        <a href="#" class="btn-outline-gold">Meet Our Team →</a>
+      </div>
+      <div class="about-features">
+        <div class="feature-item">
+          <div class="feature-icon">🏆</div>
+          <div class="feature-title">Award-Winning Work</div>
+          <div class="feature-desc">Our talented engineers craft powerful, scalable digital products.</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">⚙️</div>
+          <div class="feature-title">Expert Developers</div>
+          <div class="feature-desc">A passionate team with deep expertise across modern tech stacks.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="categories-strip">
+    <div class="category-card">
+      <div class="category-bg-text">WEB<span class="line2">DEV</span></div>
+      <div class="category-logo">✦ Mr. Fitz ✦</div>
+      <span class="cat-badge">HOT</span>
+      <img src="food1.jpeg" alt="Web Development" class="category-image">
+      <div class="category-name">WEB DEV</div>
+      <div class="category-link">→ EXPLORE SERVICE</div>
+    </div>
+    <div class="category-card">
+      <div class="category-bg-text">APP<span class="line2">DEV</span></div>
+      <div class="category-logo">✦ Mr. Fitz ✦</div>
+      <span class="cat-badge">-10%</span>
+      <img src="food2.jpeg" alt="App Development" class="category-image">
+      <div class="category-name">APP DEV</div>
+      <div class="category-link">→ EXPLORE SERVICE</div>
+    </div>
+    <div class="category-card">
+      <div class="category-bg-text">UI<span class="line2">UX</span></div>
+      <div class="category-logo">✦ Mr. Fitz ✦</div>
+      <span class="cat-badge">HOT</span>
+      <img src="food3.jpeg" alt="UI UX Design" class="category-image">
+      <div class="category-name">UI / UX</div>
+      <div class="category-link">→ EXPLORE SERVICE</div>
+    </div>
+    <div class="category-card">
+      <div class="category-bg-text">CLOUD<span class="line2">OPS</span></div>
+      <div class="category-logo">✦ Mr. Fitz ✦</div>
+      <span class="cat-badge">-15%</span>
+      <img src="food4.jpeg" alt="Cloud & DevOps" class="category-image">
+      <div class="category-name">CLOUD OPS</div>
+      <div class="category-link">→ EXPLORE SERVICE</div>
+    </div>
+    <div class="category-card">
+      <div class="category-bg-text">SEO<span class="line2">GROWTH</span></div>
+      <div class="category-logo">✦ Mr. Fitz ✦</div>
+      <span class="cat-badge">HOT</span>
+      <img src="food5.jpeg" alt="SEO & Growth" class="category-image">
+      <div class="category-name">SEO & GROWTH</div>
+      <div class="category-link">→ EXPLORE SERVICE</div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES (was MENU) -->
+<section id="menu">
+  <div class="section-header reveal">
+    <div class="eyebrow">Our Services</div>
+    <h2>We Deliver World-Class Digital<br>Solutions Tailored for You</h2>
+  </div>
+  <div class="menu-tabs-bar reveal">
+    <button class="menu-tab-btn active" data-tab="pizza">💻 Web Dev</button>
+    <button class="menu-tab-btn" data-tab="starters">📱 App Dev</button>
+    <button class="menu-tab-btn" data-tab="mains">🎨 Design</button>
+    <button class="menu-tab-btn" data-tab="desserts">☁️ Cloud</button>
+    <button class="menu-tab-btn" data-tab="drinks">📈 Marketing</button>
+  </div>
+
+  <!-- WEB DEV -->
+  <div class="menu-panel active" id="tab-pizza">
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Starter Website</div><div class="menu-item-price">$999</div></div><div class="menu-item-desc">Up to 10 pages, mobile-first design, contact forms, SEO basics, 30-day support.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Business Website</div><div class="menu-item-price">$2,499</div></div><div class="menu-item-desc">Custom UI, CMS integration, blog, analytics, speed optimization, 60-day support.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">E-Commerce Store</div><div class="menu-item-price">$4,200</div></div><div class="menu-item-desc">Full online store, payment gateway, inventory dashboard, product pages, SSL.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Web Application</div><div class="menu-item-price">$6,500</div></div><div class="menu-item-desc">Custom full-stack app, user authentication, database design, API development.</div></div>
+    </div>
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Landing Page</div><div class="menu-item-price">$499</div></div><div class="menu-item-desc">High-converting single page, A/B tested layout, CTA optimization, fast delivery.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">SaaS Platform</div><div class="menu-item-price">$12,000</div></div><div class="menu-item-desc">Multi-tenant architecture, subscription billing, admin panel, role management.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Portal & Dashboard</div><div class="menu-item-price">$5,800</div></div><div class="menu-item-desc">Data-rich dashboards, real-time charts, user roles, export features, API hooks.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Enterprise Solution</div><div class="menu-item-price">Custom</div></div><div class="menu-item-desc">Fully bespoke architecture, dedicated team, SLA support, scalable infrastructure.</div></div>
+    </div>
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Website Redesign</div><div class="menu-item-price">$1,800</div></div><div class="menu-item-desc">Modernize your existing site: new UI, performance audit, accessibility improvements.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">WordPress Development</div><div class="menu-item-price">$1,200</div></div><div class="menu-item-desc">Custom theme, plugin setup, WooCommerce, speed tuning, security hardening.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Headless CMS Build</div><div class="menu-item-price">$3,500</div></div><div class="menu-item-desc">Next.js / Gatsby frontend, Sanity or Contentful CMS, blazing-fast delivery.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Maintenance Plan</div><div class="menu-item-price">$199/mo</div></div><div class="menu-item-desc">Monthly updates, security patches, uptime monitoring, priority bug fixes.</div></div>
+    </div>
+  </div>
+
+  <!-- APP DEV -->
+  <div class="menu-panel" id="tab-starters">
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">iOS App</div><div class="menu-item-price">$8,000</div></div><div class="menu-item-desc">Native Swift app, App Store submission, push notifications, analytics.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Android App</div><div class="menu-item-price">$7,500</div></div><div class="menu-item-desc">Native Kotlin app, Google Play submission, offline support, deep linking.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">MVP App</div><div class="menu-item-price">$4,500</div></div><div class="menu-item-desc">Rapid minimum viable product, core features, ready to test with real users.</div></div>
+    </div>
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Cross-Platform App</div><div class="menu-item-price">$9,500</div></div><div class="menu-item-desc">React Native or Flutter, single codebase for iOS & Android, store submissions.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">App Redesign</div><div class="menu-item-price">$3,200</div></div><div class="menu-item-desc">UX audit, new interface, improved flows, performance optimizations.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Backend & API</div><div class="menu-item-price">$5,500</div></div><div class="menu-item-desc">REST or GraphQL API, authentication, database design, cloud deployment.</div></div>
+    </div>
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">App Maintenance</div><div class="menu-item-price">$299/mo</div></div><div class="menu-item-desc">OS updates, bug fixes, performance monitoring, feature tweaks, crash reports.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">App Store Optimization</div><div class="menu-item-price">$800</div></div><div class="menu-item-desc">Keyword research, screenshots, descriptions, rating strategy to boost downloads.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Enterprise Mobile App</div><div class="menu-item-price">Custom</div></div><div class="menu-item-desc">Scalable enterprise-grade mobile solution with SSO, MDM, and custom workflows.</div></div>
+    </div>
+  </div>
+
+  <!-- DESIGN -->
+  <div class="menu-panel" id="tab-mains">
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Brand Identity</div><div class="menu-item-price">$1,500</div></div><div class="menu-item-desc">Logo, color palette, typography system, brand guidelines document.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">UI Design System</div><div class="menu-item-price">$3,800</div></div><div class="menu-item-desc">Figma component library, design tokens, documentation, developer handoff.</div></div>
+    </div>
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">UX Research & Audit</div><div class="menu-item-price">$2,200</div></div><div class="menu-item-desc">User interviews, heatmap analysis, usability audit, actionable recommendations.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Prototype & Wireframes</div><div class="menu-item-price">$900</div></div><div class="menu-item-desc">Interactive Figma prototypes, user flows, clickable mockups for stakeholder review.</div></div>
+    </div>
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Motion Design</div><div class="menu-item-price">$1,200</div></div><div class="menu-item-desc">Lottie animations, micro-interactions, animated illustrations for web & app.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Pitch Deck Design</div><div class="menu-item-price">$750</div></div><div class="menu-item-desc">Investor-ready slide deck, compelling visuals, data storytelling, print-ready files.</div></div>
+    </div>
+  </div>
+
+  <!-- CLOUD -->
+  <div class="menu-panel" id="tab-desserts">
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Cloud Migration</div><div class="menu-item-price">$3,500</div></div><div class="menu-item-desc">Move your existing infrastructure to AWS, GCP, or Azure with zero downtime.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">DevOps Setup</div><div class="menu-item-price">$2,800</div></div><div class="menu-item-desc">CI/CD pipelines, Docker, Kubernetes, automated testing, deployment workflows.</div></div>
+    </div>
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Managed Hosting</div><div class="menu-item-price">$149/mo</div></div><div class="menu-item-desc">99.99% uptime SLA, daily backups, security patches, CDN, performance tuning.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Security Audit</div><div class="menu-item-price">$1,900</div></div><div class="menu-item-desc">Penetration testing, vulnerability report, remediation roadmap, compliance check.</div></div>
+    </div>
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Serverless Architecture</div><div class="menu-item-price">$4,200</div></div><div class="menu-item-desc">Event-driven functions, auto-scaling, cost optimization, monitoring dashboards.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Data Engineering</div><div class="menu-item-price">$5,500</div></div><div class="menu-item-desc">ETL pipelines, data warehousing, BI integrations, real-time streaming solutions.</div></div>
+    </div>
+  </div>
+
+  <!-- MARKETING -->
+  <div class="menu-panel" id="tab-drinks">
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">SEO Package</div><div class="menu-item-price">$699/mo</div></div><div class="menu-item-desc">On-page, off-page, technical SEO, monthly reports, keyword rank tracking.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Google Ads Management</div><div class="menu-item-price">$550/mo</div></div><div class="menu-item-desc">Campaign setup, A/B ad testing, bid optimization, conversion tracking, reporting.</div></div>
+    </div>
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Social Media Marketing</div><div class="menu-item-price">$450/mo</div></div><div class="menu-item-desc">Content calendar, post scheduling, community management, growth analytics.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Email Marketing</div><div class="menu-item-price">$350/mo</div></div><div class="menu-item-desc">Campaign design, list management, automation flows, open rate optimization.</div></div>
+    </div>
+    <div class="menu-column">
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Content Strategy</div><div class="menu-item-price">$800/mo</div></div><div class="menu-item-desc">Blog writing, video scripts, infographics, thought leadership, brand voice guide.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Analytics & Reporting</div><div class="menu-item-price">$299/mo</div></div><div class="menu-item-desc">GA4 setup, custom dashboards, monthly performance reports, insight sessions.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="reviews-header reveal">
+    <div class="eyebrow">What Our Clients Say</div>
+    <h2>Trusted by Founders &<br>Teams Around the World</h2>
+  </div>
+  <div class="reviews-carousel-wrap reveal">
+    <div class="reviews-track" id="reviewsTrack">
+      <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Absolutely the finest digital agency we've worked with. Our new web app launched ahead of schedule and our conversion rate doubled within the first month. Extraordinary team."</p><div class="review-author"><div class="review-avatar">A</div><div><div class="review-name">Alexandra Monroe</div><div class="review-role">CEO, Veritas Ventures</div></div></div></div>
+      <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"The attention to detail in our mobile app is unmatched. Mr. Fitz delivered a product that our investors called 'best-in-class UX.' The support post-launch has been impeccable."</p><div class="review-author"><div class="review-avatar">J</div><div><div class="review-name">James Whitmore</div><div class="review-role">Founder, NovaTech Labs</div></div></div></div>
+      <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"From the discovery call to the final handoff, every step was seamless. Our redesigned platform saw a 180% spike in user engagement. I recommend Mr. Fitz without hesitation."</p><div class="review-author"><div class="review-avatar">S</div><div><div class="review-name">Sophia Bellaforte</div><div class="review-role">Product Director, Orbis</div></div></div></div>
+      <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"The SEO and digital strategy team at Mr. Fitz took us from page 4 to page 1 on Google in three months. The results speak for themselves — organic traffic tripled."</p><div class="review-author"><div class="review-avatar">M</div><div><div class="review-name">Marco di Napoli</div><div class="review-role">Marketing Head, Solaris Group</div></div></div></div>
+      <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"We celebrated our Series A right after our platform went live. Mr. Fitz built something we're genuinely proud to show investors — polished, fast, and bulletproof on every device."</p><div class="review-author"><div class="review-avatar">L</div><div><div class="review-name">Lucia Fernandez</div><div class="review-role">Co-Founder, Luma Finance</div></div></div></div>
+      <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"I've partnered with agencies across the US and Europe. Nothing compares to Mr. Fitz's engineering depth. Clean code, thoughtful architecture, and on-time delivery every single time."</p><div class="review-author"><div class="review-avatar">R</div><div><div class="review-name">Robert Ashford</div><div class="review-role">CTO, Meridian Software</div></div></div></div>
+    </div>
+  </div>
+  <div class="carousel-controls">
+    <button class="carousel-btn" id="revPrev">←</button>
+    <div class="carousel-dots" id="carouselDots"></div>
+    <button class="carousel-btn" id="revNext">→</button>
+  </div>
+</section>
+
+<!-- PORTFOLIO (was GALLERY) -->
+<section id="gallery-section">
+  <div class="gallery-header reveal">
+    <div class="eyebrow">Our Portfolio</div>
+    <h2>Work That Speaks for Itself</h2>
+  </div>
+  <div class="gallery-filter-bar reveal">
+    <button class="gf-btn active" data-filter="all">All</button>
+    <button class="gf-btn" data-filter="pizza">Web Projects</button>
+    <button class="gf-btn" data-filter="mains">App Projects</button>
+    <button class="gf-btn" data-filter="ambiance">Branding</button>
+  </div>
+  <div class="gallery-masonry reveal">
+    <div class="gallery-item" data-cat="pizza" data-caption="Veritas — E-Commerce Platform Redesign" data-src="food1.jpeg"><img src="food1.jpeg" alt="Portfolio 1"><div class="gallery-overlay"><div class="gallery-overlay-title">E-Commerce Platform</div><div class="gallery-overlay-sub">Click to enlarge</div></div><div class="gallery-zoom-icon">🔍</div></div>
+    <div class="gallery-item" data-cat="mains" data-caption="NovaTech — iOS & Android App" data-src="food6.jpeg"><img src="food6.jpeg" alt="Portfolio 2"><div class="gallery-overlay"><div class="gallery-overlay-title">Mobile App Launch</div><div class="gallery-overlay-sub">Click to enlarge</div></div><div class="gallery-zoom-icon">🔍</div></div>
+    <div class="gallery-item" data-cat="pizza" data-caption="Orbis — SaaS Dashboard UI" data-src="food2.jpeg"><img src="food2.jpeg" alt="Portfolio 3"><div class="gallery-overlay"><div class="gallery-overlay-title">SaaS Dashboard</div><div class="gallery-overlay-sub">Click to enlarge</div></div><div class="gallery-zoom-icon">🔍</div></div>
+    <div class="gallery-item" data-cat="ambiance" data-caption="Solaris — Full Brand Identity" data-src="food4.jpeg"><img src="food4.jpeg" alt="Portfolio 4"><div class="gallery-overlay"><div class="gallery-overlay-title">Brand Identity</div><div class="gallery-overlay-sub">Click to enlarge</div></div><div class="gallery-zoom-icon">🔍</div></div>
+    <div class="gallery-item" data-cat="mains" data-caption="Luma Finance — React Native App" data-src="food5.jpeg"><img src="food5.jpeg" alt="Portfolio 5"><div class="gallery-overlay"><div class="gallery-overlay-title">Fintech App</div><div class="gallery-overlay-sub">Click to enlarge</div></div><div class="gallery-zoom-icon">🔍</div></div>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <button class="lb-close" id="lbClose">✕</button>
+  <button class="lb-nav lb-prev" id="lbPrev">←</button>
+  <img id="lbImg" src="" alt="">
+  <button class="lb-nav lb-next" id="lbNext">→</button>
+  <div class="lb-caption" id="lbCaption"></div>
+</div>
+
+<!-- STATS -->
+<div id="stats">
+  <div class="stat-item"><div class="stat-icon">🚀</div><div class="stat-number" data-target="350" data-suffix="+">0</div><div class="stat-label">Projects Delivered</div></div>
+  <div class="stat-item"><div class="stat-icon">😊</div><div class="stat-number" data-target="12000" data-suffix="K+">0</div><div class="stat-label">Happy Clients</div></div>
+  <div class="stat-item"><div class="stat-icon">🏅</div><div class="stat-number" data-target="15" data-suffix="+">0</div><div class="stat-label">Years of Excellence</div></div>
+  <div class="stat-item"><div class="stat-icon">⭐</div><div class="stat-number" data-target="49" data-suffix="★" data-decimal="true">0</div><div class="stat-label">Average Client Rating</div></div>
+</div>
+
+<!-- CONTACT / GET A QUOTE (was RESERVATION) -->
+<section id="reservation">
+  <div class="res-text reveal">
+    <div class="eyebrow">Start a Project</div>
+    <h2>Let's Build Something<br>Great Together</h2>
+    <p>Project spots fill up fast. Send us your details and we'll craft a proposal within 24 hours.</p>
+  </div>
+  <div class="res-form reveal">
+    <input type="text" class="res-input" placeholder="Your Name">
+    <input type="email" class="res-input" placeholder="Email Address">
+    <input type="text" class="res-input" placeholder="Company / Project">
+    <select class="res-input" style="cursor:pointer;">
+      <option value="" disabled selected>Service Needed</option>
+      <option>Web Development</option>
+      <option>App Development</option>
+      <option>UI / UX Design</option>
+      <option>Cloud & DevOps</option>
+      <option>SEO & Marketing</option>
+    </select>
+    <button class="res-submit">Get Free Quote →</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="contact">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="logo"><img src="logo.jpeg" alt="Mr. Fitz Logo">MR. <span>FITZ</span></a>
+      <p class="footer-desc">Where every project tells a story of innovation, precision, and the finest digital craftsmanship — built to last and designed to grow.</p>
+      <div class="footer-socials">
+        <a href="#" class="social-btn">f</a>
+        <a href="#" class="social-btn">𝕏</a>
+        <a href="#" class="social-btn">in</a>
+        <a href="#" class="social-btn">▶</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#menu">Services</a></li>
+        <li><a href="#about-categories">About Us</a></li>
+        <li><a href="#reviews">Reviews</a></li>
+        <li><a href="#gallery-section">Portfolio</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Our Services</h4>
+      <ul>
+        <li><a href="#">Web Development</a></li>
+        <li><a href="#">App Development</a></li>
+        <li><a href="#">UI / UX Design</a></li>
+        <li><a href="#">Cloud & DevOps</a></li>
+        <li><a href="#">SEO & Marketing</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact Us</h4>
+      <div class="footer-contact-item"><span class="contact-icon">📍</span><span class="contact-text">42 Innovation Drive, Tech District, New York, NY 10001</span></div>
+      <div class="footer-contact-item"><span class="contact-icon">📞</span><span class="contact-text">+880 123 456 88</span></div>
+      <div class="footer-contact-item"><span class="contact-icon">✉️</span><span class="contact-text">hello@mrfitz.digital</span></div>
+      <div class="footer-contact-item"><span class="contact-icon">🕐</span><span class="contact-text">Mon–Fri: 9:00 AM – 6:00 PM EST</span></div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 MR. FITZ DIGITAL. All rights reserved. Crafted with passion.</p>
+    <p>Privacy Policy · Terms of Service</p>
+  </div>
+</footer>
+
+<!-- model-viewer CDN -->
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+
+<!-- ── PAGE SCRIPTS ── -->
+<script>
+/* LOADER */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const loader = document.getElementById('loader');
+    loader.style.opacity = '0';
+    setTimeout(() => loader.style.display = 'none', 800);
+  }, 1600);
+});
+
+/* MOBILE DRAWER */
+const hamburger    = document.getElementById('hamburger');
+const mobileDrawer = document.getElementById('mobileDrawer');
+const drawerOverlay= document.getElementById('drawerOverlay');
+
+hamburger.addEventListener('click', () => {
+  mobileDrawer.classList.add('open');
+  drawerOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+});
+
+function closeDrawer() {
+  mobileDrawer.classList.remove('open');
+  drawerOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+
+/* REVEAL ON SCROLL */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+/* MENU TABS */
+document.querySelectorAll('.menu-tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.menu-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.menu-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    const target = document.getElementById('tab-' + btn.dataset.tab);
+    if (target) target.classList.add('active');
+  });
+});
+
+/* REVIEWS CAROUSEL */
+(function() {
+  const track = document.getElementById('reviewsTrack');
+  const dots  = document.getElementById('carouselDots');
+  const cards = track ? track.querySelectorAll('.review-card') : [];
+  const total = cards.length;
+  const perPage = 3;
+  const pages = Math.ceil(total / perPage);
+  let current = 0, autoTimer;
+  if (!track || total === 0) return;
+  for (let i = 0; i < pages; i++) {
+    const d = document.createElement('button');
+    d.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i));
+    dots.appendChild(d);
+  }
+  function goTo(page) {
+    current = (page + pages) % pages;
+    const cardWidth = cards[0].offsetWidth + 24;
+    track.style.transform = `translateX(-${current * perPage * cardWidth}px)`;
+    dots.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    clearTimeout(autoTimer);
+    autoTimer = setTimeout(() => goTo(current + 1), 5000);
+  }
+  document.getElementById('revPrev').addEventListener('click', () => goTo(current - 1));
+  document.getElementById('revNext').addEventListener('click', () => goTo(current + 1));
+  autoTimer = setTimeout(() => goTo(1), 5000);
+})();
+
+/* GALLERY FILTER + LIGHTBOX */
+(function() {
+  const items = document.querySelectorAll('.gallery-item');
+  const lightbox = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lbImg');
+  const lbCap = document.getElementById('lbCaption');
+  let currentImages = [...items], currentIdx = 0;
+  document.querySelectorAll('.gf-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.gf-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      currentImages = [];
+      items.forEach(item => {
+        const show = filter === 'all' || item.dataset.cat === filter;
+        item.style.display = show ? '' : 'none';
+        if (show) currentImages.push(item);
+      });
+    });
+  });
+  items.forEach(item => {
+    item.addEventListener('click', () => { currentIdx = currentImages.indexOf(item); openLB(currentIdx); });
+  });
+  function openLB(idx) {
+    currentIdx = (idx + currentImages.length) % currentImages.length;
+    lbImg.src = currentImages[currentIdx].dataset.src;
+    lbCap.textContent = currentImages[currentIdx].dataset.caption;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  document.getElementById('lbClose').addEventListener('click', closeLB);
+  document.getElementById('lbPrev').addEventListener('click', () => openLB(currentIdx - 1));
+  document.getElementById('lbNext').addEventListener('click', () => openLB(currentIdx + 1));
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLB(); });
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLB();
+    if (e.key === 'ArrowLeft') openLB(currentIdx - 1);
+    if (e.key === 'ArrowRight') openLB(currentIdx + 1);
+  });
+  function closeLB() { lightbox.classList.remove('open'); document.body.style.overflow = ''; }
+})();
+
+/* ANIMATED COUNTERS */
+(function() {
+  const counters = document.querySelectorAll('.stat-number[data-target]');
+  let triggered = false;
+  const statsObs = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && !triggered) {
+      triggered = true;
+      counters.forEach(el => {
+        const target = +el.dataset.target;
+        const suffix = el.dataset.suffix || '';
+        const isDecimal = el.dataset.decimal === 'true';
+        const duration = 1800;
+        const start = performance.now();
+        function tick(now) {
+          const progress = Math.min((now - start) / duration, 1);
+          const ease = 1 - Math.pow(1 - progress, 3);
+          const val = target * ease;
+          if (isDecimal) { el.textContent = (val / 10).toFixed(1) + suffix; }
+          else if (target >= 1000) { el.textContent = Math.round(val / 1000) + (progress === 1 ? suffix : 'K+'); }
+          else { el.textContent = Math.round(val) + (progress === 1 ? suffix : '+'); }
+          if (progress < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    }
+  }, { threshold: 0.3 });
+  const statsEl = document.getElementById('stats');
+  if (statsEl) statsObs.observe(statsEl);
+})();
+
+/* CONTACT FORM */
+document.querySelector('.res-submit') && document.querySelector('.res-submit').addEventListener('click', function() {
+  const inputs = document.querySelectorAll('.res-input');
+  let allFilled = true;
+  inputs.forEach(i => { if (!i.value) { allFilled = false; i.style.borderColor = 'var(--red)'; } else i.style.borderColor = ''; });
+  if (allFilled) {
+    this.textContent = '✓ Request Sent!';
+    this.style.background = '#2ecc71';
+    setTimeout(() => { this.textContent = 'Get Free Quote →'; this.style.background = ''; inputs.forEach(i => i.value = ''); }, 2800);
+  }
+});
+</script>
+</body>
+</html>
