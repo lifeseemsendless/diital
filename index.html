@@ -27,17 +27,13 @@
 
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:var(--black);color:var(--white);font-family:'Rajdhani',sans-serif;overflow-x:hidden;cursor:default}
+body{background:var(--black);color:var(--white);font-family:'Rajdhani',sans-serif;overflow-x:hidden;cursor:none}
 
-/* ═══ GRID BACKGROUND ═══ */
-body::before{
-  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:
-    linear-gradient(var(--grid-line) 1px,transparent 1px),
-    linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);
-  background-size:60px 60px;
-  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 40%,transparent 100%);
-}
+/* ═══ CUSTOM CURSOR ═══ */
+.cursor{position:fixed;width:12px;height:12px;background:var(--cyan);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:width 0.2s,height 0.2s,background 0.2s;mix-blend-mode:screen}
+.cursor-trail{position:fixed;width:40px;height:40px;border:1px solid rgba(0,229,255,0.4);border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:transform 0.12s ease,width 0.3s,height 0.3s,border-color 0.3s}
+body:has(a:hover) .cursor,.cursor.hover{width:24px;height:24px;background:var(--magenta)}
+body:has(a:hover) .cursor-trail,.cursor-trail.hover{width:60px;height:60px;border-color:rgba(255,45,120,0.4)}
 
 /* ═══ SCAN LINES ═══ */
 body::after{
@@ -47,19 +43,20 @@ body::after{
 }
 @keyframes scanMove{0%{transform:translateY(0)}100%{transform:translateY(4px)}}
 
-/* ═══ CUSTOM SCROLLBAR ═══ */
-::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar{width:3px}
 ::-webkit-scrollbar-track{background:var(--black)}
-::-webkit-scrollbar-thumb{background:var(--cyan);border-radius:2px}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--cyan),var(--magenta));border-radius:2px}
 
 /* ═══ NAVBAR ═══ */
 nav{
   position:fixed;top:0;left:0;right:0;z-index:1000;
   display:flex;align-items:center;justify-content:space-between;
   padding:0 60px;height:72px;
-  background:rgba(3,5,10,0.9);backdrop-filter:blur(24px);
-  border-bottom:1px solid rgba(0,229,255,0.12);
+  background:rgba(3,5,10,0.85);backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(0,229,255,0.1);
+  transition:background 0.4s;
 }
+nav.scrolled{background:rgba(3,5,10,0.98);border-bottom-color:rgba(0,229,255,0.18)}
 nav::after{content:'';position:absolute;bottom:0;left:0;width:30%;height:1px;background:linear-gradient(90deg,var(--cyan),transparent);animation:navLine 4s ease-in-out infinite alternate}
 @keyframes navLine{0%{width:20%}100%{width:60%}}
 
@@ -79,66 +76,180 @@ nav::after{content:'';position:absolute;bottom:0;left:0;width:30%;height:1px;bac
 .status-dot{width:6px;height:6px;background:#00ff88;border-radius:50%;animation:pulse 2s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,255,136,0.4)}50%{opacity:0.7;box-shadow:0 0 0 6px rgba(0,255,136,0)}}
 
-.btn-book{background:transparent;color:var(--cyan);border:1px solid var(--cyan);padding:10px 24px;font-size:0.68rem;letter-spacing:3px;text-transform:uppercase;font-weight:700;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all 0.3s;text-decoration:none;display:inline-block;position:relative;overflow:hidden;clip-path:polygon(8px 0%,100% 0%,100% calc(100% - 8px),calc(100% - 8px) 100%,0% 100%,0% 8px)}
+.btn-book{background:transparent;color:var(--cyan);border:1px solid var(--cyan);padding:10px 24px;font-size:0.68rem;letter-spacing:3px;text-transform:uppercase;font-weight:700;cursor:none;font-family:'Space Grotesk',sans-serif;transition:all 0.3s;text-decoration:none;display:inline-block;position:relative;overflow:hidden;clip-path:polygon(8px 0%,100% 0%,100% calc(100% - 8px),calc(100% - 8px) 100%,0% 100%,0% 8px)}
 .btn-book::before{content:'';position:absolute;inset:0;background:var(--cyan);transform:translateX(-101%);transition:transform 0.3s}
 .btn-book:hover{color:var(--black)}
 .btn-book:hover::before{transform:translateX(0)}
 .btn-book span{position:relative;z-index:1}
 
-/* HAMBURGER */
-.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:none;padding:4px}
 .hamburger span{display:block;width:24px;height:2px;background:var(--cyan);transition:all 0.3s}
 
-/* ═══ HERO ═══ */
-#hero{position:relative;width:100vw;height:100vh;background:var(--black);overflow:hidden;display:flex;align-items:center}
+/* ═══════════════════════════
+   HERO — FULL 3D CINEMATIC
+═══════════════════════════ */
+#hero{
+  position:relative;width:100vw;height:100vh;
+  background:var(--black);overflow:hidden;
+  display:flex;align-items:center;
+}
 
-.hero-ambient{position:absolute;inset:0;pointer-events:none}
-.hero-ambient::before{content:'';position:absolute;top:-20%;right:-10%;width:70%;height:140%;background:radial-gradient(ellipse,rgba(0,229,255,0.06) 0%,transparent 60%)}
-.hero-ambient::after{content:'';position:absolute;bottom:-20%;left:-10%;width:50%;height:100%;background:radial-gradient(ellipse,rgba(255,45,120,0.04) 0%,transparent 60%)}
+/* Three.js canvas */
+#hero-canvas{
+  position:absolute;inset:0;z-index:1;
+  width:100%;height:100%;
+}
 
-#canvas-container{position:absolute;right:0;top:0;width:60%;height:100%;z-index:1}
-#pizza-model{width:100%;height:100%;background-color:transparent;--poster-color:transparent}
+/* Atmospheric glow layers */
+.hero-atmo{position:absolute;inset:0;z-index:2;pointer-events:none}
+.hero-atmo::before{
+  content:'';position:absolute;
+  top:-30%;right:-20%;width:90%;height:160%;
+  background:radial-gradient(ellipse,rgba(0,229,255,0.07) 0%,transparent 55%);
+  animation:atmoFloat1 8s ease-in-out infinite alternate;
+}
+.hero-atmo::after{
+  content:'';position:absolute;
+  bottom:-20%;left:-15%;width:70%;height:120%;
+  background:radial-gradient(ellipse,rgba(255,45,120,0.05) 0%,transparent 55%);
+  animation:atmoFloat2 11s ease-in-out infinite alternate;
+}
+@keyframes atmoFloat1{0%{transform:translate(0,0) scale(1)}100%{transform:translate(40px,-30px) scale(1.1)}}
+@keyframes atmoFloat2{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-30px,40px) scale(1.08)}}
 
-.hero-vignette{position:absolute;top:0;left:0;width:60%;height:100%;background:linear-gradient(90deg,var(--black) 35%,rgba(3,5,10,0.6) 70%,transparent);z-index:5;pointer-events:none}
+/* Left content fade */
+.hero-vignette{
+  position:absolute;top:0;left:0;width:55%;height:100%;
+  background:linear-gradient(90deg,rgba(3,5,10,0.96) 30%,rgba(3,5,10,0.5) 75%,transparent);
+  z-index:5;pointer-events:none;
+}
 
-.hero-content{position:relative;z-index:10;padding-left:80px;max-width:640px}
+/* Bottom fade */
+.hero-vignette-bottom{
+  position:absolute;bottom:0;left:0;right:0;height:25%;
+  background:linear-gradient(0deg,var(--black),transparent);
+  z-index:5;pointer-events:none;
+}
 
-.hero-badge{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(0,229,255,0.3);padding:7px 18px;font-size:0.65rem;letter-spacing:4px;text-transform:uppercase;color:var(--cyan);font-family:'Space Grotesk',sans-serif;margin-bottom:28px;background:rgba(0,229,255,0.05);clip-path:polygon(6px 0%,100% 0%,100% calc(100% - 6px),calc(100% - 6px) 100%,0% 100%,0% 6px)}
+.hero-content{
+  position:relative;z-index:10;
+  padding-left:80px;max-width:640px;
+}
+
+/* Badge with glitch effect */
+.hero-badge{
+  display:inline-flex;align-items:center;gap:10px;
+  border:1px solid rgba(0,229,255,0.3);padding:7px 18px;
+  font-size:0.65rem;letter-spacing:4px;text-transform:uppercase;
+  color:var(--cyan);font-family:'Space Grotesk',sans-serif;
+  margin-bottom:28px;background:rgba(0,229,255,0.05);
+  clip-path:polygon(6px 0%,100% 0%,100% calc(100% - 6px),calc(100% - 6px) 100%,0% 100%,0% 6px);
+  animation:badgePulse 4s ease-in-out infinite;
+}
 .hero-badge::before{content:'';width:5px;height:5px;background:var(--cyan);border-radius:50%;animation:pulse 2s ease-in-out infinite}
+@keyframes badgePulse{0%,100%{box-shadow:0 0 0 rgba(0,229,255,0)}50%{box-shadow:0 0 20px rgba(0,229,255,0.15)}}
 
-.hero-eyeline{font-family:'Space Grotesk',sans-serif;font-size:0.8rem;color:rgba(240,192,96,0.8);letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:14px}
+.hero-eyeline{
+  font-family:'Space Grotesk',sans-serif;font-size:0.8rem;
+  color:rgba(240,192,96,0.8);letter-spacing:3px;text-transform:uppercase;
+  margin-bottom:14px;display:flex;align-items:center;gap:14px;
+}
 .hero-eyeline::before{content:'';width:32px;height:1px;background:var(--gold)}
 
-.hero-title{font-family:'Orbitron',monospace;font-size:clamp(2.8rem,5.5vw,5.2rem);font-weight:900;line-height:1.05;text-transform:uppercase;color:var(--white);margin-bottom:0}
-.hero-title .accent{color:var(--cyan);display:block;text-shadow:0 0 40px rgba(0,229,255,0.4),0 0 80px rgba(0,229,255,0.15)}
-.hero-title .accent2{color:var(--magenta);text-shadow:0 0 40px rgba(255,45,120,0.4)}
+/* Title with cinematic entrance */
+.hero-title{
+  font-family:'Orbitron',monospace;
+  font-size:clamp(2.8rem,5.5vw,5.2rem);
+  font-weight:900;line-height:1.05;text-transform:uppercase;
+  color:var(--white);margin-bottom:0;
+  opacity:0;animation:titleReveal 1.2s cubic-bezier(0.16,1,0.3,1) 0.4s forwards;
+}
+@keyframes titleReveal{
+  0%{opacity:0;transform:translateY(40px) skewY(2deg)}
+  100%{opacity:1;transform:translateY(0) skewY(0)}
+}
+.hero-title .line-wrap{overflow:hidden;display:block}
+.hero-title .accent{
+  color:var(--cyan);display:block;
+  text-shadow:0 0 40px rgba(0,229,255,0.4),0 0 80px rgba(0,229,255,0.15),0 0 120px rgba(0,229,255,0.05);
+  animation:cyanFlicker 6s ease-in-out infinite;
+}
+@keyframes cyanFlicker{
+  0%,98%,100%{text-shadow:0 0 40px rgba(0,229,255,0.4),0 0 80px rgba(0,229,255,0.15)}
+  99%{text-shadow:0 0 80px rgba(0,229,255,0.8),0 0 120px rgba(0,229,255,0.4)}
+}
+.hero-title .accent2{
+  color:var(--magenta);
+  text-shadow:0 0 40px rgba(255,45,120,0.4),0 0 80px rgba(255,45,120,0.15);
+}
 
-.hero-subtitle{font-size:1rem;color:rgba(200,220,240,0.6);line-height:1.8;margin:24px 0 44px;max-width:420px;font-weight:400;letter-spacing:0.5px}
+.hero-subtitle{
+  font-size:1rem;color:rgba(200,220,240,0.6);
+  line-height:1.8;margin:24px 0 44px;max-width:420px;
+  font-weight:400;letter-spacing:0.5px;
+  opacity:0;animation:fadeUp 1s ease 1s forwards;
+}
+@keyframes fadeUp{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:none}}
 
-.hero-ctas{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
-.btn-primary{background:var(--cyan);color:var(--black);border:none;padding:15px 36px;font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;font-weight:700;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all 0.3s;text-decoration:none;display:inline-flex;align-items:center;gap:10px;clip-path:polygon(8px 0%,100% 0%,100% calc(100% - 8px),calc(100% - 8px) 100%,0% 100%,0% 8px);position:relative;overflow:hidden}
-.btn-primary::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.2),transparent);transform:translateX(-101%);transition:transform 0.4s}
+.hero-ctas{
+  display:flex;gap:16px;align-items:center;flex-wrap:wrap;
+  opacity:0;animation:fadeUp 1s ease 1.2s forwards;
+}
+
+.btn-primary{
+  background:var(--cyan);color:var(--black);border:none;
+  padding:15px 36px;font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;
+  font-weight:700;cursor:none;font-family:'Space Grotesk',sans-serif;
+  transition:all 0.3s;text-decoration:none;display:inline-flex;align-items:center;gap:10px;
+  clip-path:polygon(8px 0%,100% 0%,100% calc(100% - 8px),calc(100% - 8px) 100%,0% 100%,0% 8px);
+  position:relative;overflow:hidden;
+}
+.btn-primary::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.25),transparent);transform:translateX(-101%);transition:transform 0.4s}
 .btn-primary:hover::before{transform:translateX(0)}
-.btn-primary:hover{box-shadow:0 0 30px rgba(0,229,255,0.5),0 0 60px rgba(0,229,255,0.2)}
+.btn-primary:hover{box-shadow:0 0 40px rgba(0,229,255,0.6),0 0 80px rgba(0,229,255,0.25)}
 .btn-primary::after{content:'→';font-size:1rem}
 
-.btn-secondary{color:rgba(200,220,240,0.6);text-decoration:none;font-size:0.7rem;letter-spacing:2.5px;text-transform:uppercase;font-weight:600;font-family:'Space Grotesk',sans-serif;display:inline-flex;align-items:center;gap:10px;transition:color 0.3s}
+.btn-secondary{
+  color:rgba(200,220,240,0.6);text-decoration:none;
+  font-size:0.7rem;letter-spacing:2.5px;text-transform:uppercase;font-weight:600;
+  font-family:'Space Grotesk',sans-serif;display:inline-flex;align-items:center;gap:10px;transition:color 0.3s;
+}
 .btn-secondary:hover{color:var(--cyan)}
 .btn-secondary::before{content:'';width:28px;height:1px;background:currentColor;transition:width 0.3s}
 .btn-secondary:hover::before{width:48px}
 
-.price-badge{position:absolute;bottom:18%;right:36%;background:var(--magenta);color:var(--white);padding:16px 22px;text-align:center;z-index:15;clip-path:polygon(8% 0%,92% 0%,100% 8%,100% 92%,92% 100%,8% 100%,0% 92%,0% 8%);animation:floatBadge 3s ease-in-out infinite;box-shadow:0 0 30px rgba(255,45,120,0.4)}
+/* Floating price badge */
+.price-badge{
+  position:absolute;bottom:18%;right:8%;
+  background:var(--magenta);color:var(--white);
+  padding:16px 22px;text-align:center;z-index:15;
+  clip-path:polygon(8% 0%,92% 0%,100% 8%,100% 92%,92% 100%,8% 100%,0% 92%,0% 8%);
+  animation:floatBadge 3s ease-in-out infinite;
+  box-shadow:0 0 40px rgba(255,45,120,0.5),0 0 80px rgba(255,45,120,0.2);
+}
 .price-badge .only{font-size:0.58rem;letter-spacing:2px;text-transform:uppercase;opacity:0.8;font-family:'Space Grotesk',sans-serif}
 .price-badge .amount{font-family:'Orbitron',monospace;font-size:1.6rem;line-height:1;color:var(--white)}
-@keyframes floatBadge{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(2deg)}}
+@keyframes floatBadge{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-12px) rotate(2deg)}}
 
-.scroll-indicator{position:absolute;bottom:36px;left:80px;z-index:10;display:flex;align-items:center;gap:14px;color:var(--muted);font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;font-family:'Space Grotesk',sans-serif}
+/* Hero scroll indicator */
+.scroll-indicator{
+  position:absolute;bottom:36px;left:80px;z-index:10;
+  display:flex;align-items:center;gap:14px;
+  color:var(--muted);font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;font-family:'Space Grotesk',sans-serif;
+  opacity:0;animation:fadeUp 1s ease 1.6s forwards;
+}
 .scroll-line{width:44px;height:1px;background:var(--muted2);position:relative;overflow:hidden}
 .scroll-line::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:var(--cyan);animation:scanLine 2s ease-in-out infinite}
 @keyframes scanLine{0%{left:-100%}100%{left:100%}}
 
+/* Floating data nodes HUD */
+.hero-hud{position:absolute;right:5%;bottom:30%;z-index:8;display:flex;flex-direction:column;gap:10px;opacity:0;animation:fadeUp 1s ease 1.4s forwards}
+.hud-node{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-size:0.6rem;letter-spacing:2px;color:rgba(0,229,255,0.5);text-transform:uppercase}
+.hud-node::before{content:'';width:4px;height:4px;background:var(--cyan);border-radius:50%;box-shadow:0 0 6px var(--cyan)}
+.hud-line{width:60px;height:1px;background:linear-gradient(90deg,rgba(0,229,255,0.4),transparent)}
+
 /* ═══ TICKER ═══ */
-.ticker-wrap{background:var(--cyan);padding:12px 0;overflow:hidden;position:relative}
+.ticker-wrap{background:var(--cyan);padding:12px 0;overflow:hidden;position:relative;z-index:10}
 .ticker-wrap::before,.ticker-wrap::after{content:'';position:absolute;top:0;bottom:0;width:60px;z-index:2}
 .ticker-wrap::before{left:0;background:linear-gradient(90deg,var(--cyan),transparent)}
 .ticker-wrap::after{right:0;background:linear-gradient(-90deg,var(--cyan),transparent)}
@@ -152,8 +263,20 @@ nav::after{content:'';position:absolute;bottom:0;left:0;width:30%;height:1px;bac
 .section-eyebrow::before{content:'//';opacity:0.5}
 
 /* ═══ SPECIAL DEAL ═══ */
-#special-deal{background:var(--darker);padding:100px 80px;display:flex;align-items:center;justify-content:space-between;gap:60px;position:relative;overflow:hidden;border-top:1px solid rgba(0,229,255,0.08);border-bottom:1px solid rgba(0,229,255,0.08)}
+#special-deal{
+  background:var(--darker);padding:100px 80px;
+  display:flex;align-items:center;justify-content:space-between;gap:60px;
+  position:relative;overflow:hidden;
+  border-top:1px solid rgba(0,229,255,0.08);
+  border-bottom:1px solid rgba(0,229,255,0.08);
+}
 #special-deal::before{content:'OFFER';position:absolute;left:-30px;top:50%;transform:translateY(-50%);font-family:'Orbitron',monospace;font-size:16rem;color:rgba(0,229,255,0.03);line-height:1;pointer-events:none;white-space:nowrap}
+
+/* 3D card tilt */
+.deal-card-3d{
+  flex:1;transform-style:preserve-3d;perspective:1000px;
+  transition:transform 0.1s ease;
+}
 
 .deal-text{flex:1}
 .deal-eyebrow{font-family:'Space Grotesk',sans-serif;font-size:0.65rem;letter-spacing:5px;text-transform:uppercase;color:var(--magenta);margin-bottom:12px;display:flex;align-items:center;gap:10px}
@@ -168,8 +291,8 @@ nav::after{content:'';position:absolute;bottom:0;left:0;width:30%;height:1px;bac
 .deal-stamp .only{font-size:0.6rem;letter-spacing:1px;font-family:'Space Grotesk',sans-serif}
 .deal-stamp .price{font-size:1.8rem;line-height:1}
 
-/* ═══ SVG SERVICE ILLUSTRATIONS ═══ */
-.svc-illustration{width:100%;max-width:520px;border-radius:4px;display:block;border:1px solid rgba(0,229,255,0.12);background:var(--darker);overflow:hidden;position:relative}
+.svc-illustration{width:100%;max-width:520px;border-radius:4px;display:block;border:1px solid rgba(0,229,255,0.12);background:var(--darker);overflow:hidden;position:relative;transition:box-shadow 0.3s;transform:translateZ(0)}
+.svc-illustration:hover{box-shadow:0 0 60px rgba(0,229,255,0.1),0 30px 60px rgba(0,0,0,0.4)}
 .svc-illustration svg{display:block;width:100%}
 
 /* ═══ ABOUT + CATEGORIES ═══ */
@@ -202,9 +325,9 @@ nav::after{content:'';position:absolute;bottom:0;left:0;width:30%;height:1px;bac
 
 /* ═══ CATEGORIES STRIP ═══ */
 .categories-strip{display:grid;grid-template-columns:repeat(5,1fr)}
-.category-card{position:relative;aspect-ratio:4/5;overflow:hidden;cursor:pointer;background:var(--darker)}
-.cat-bg{position:absolute;inset:0;transition:transform 0.5s}
-.category-card:hover .cat-bg{transform:scale(1.05)}
+.category-card{position:relative;aspect-ratio:4/5;overflow:hidden;cursor:none;background:var(--darker);transform-style:preserve-3d}
+.cat-bg{position:absolute;inset:0;transition:transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94)}
+.category-card:hover .cat-bg{transform:scale(1.08)}
 .category-card:nth-child(odd) .cat-bg-overlay{background:linear-gradient(135deg,rgba(0,229,255,0.15),rgba(0,0,0,0.6))}
 .category-card:nth-child(even) .cat-bg-overlay{background:linear-gradient(135deg,rgba(255,45,120,0.12),rgba(0,0,0,0.6))}
 .cat-bg-overlay{position:absolute;inset:0;transition:opacity 0.4s}
@@ -212,12 +335,11 @@ nav::after{content:'';position:absolute;bottom:0;left:0;width:30%;height:1px;bac
 .category-logo{position:absolute;top:16px;left:50%;transform:translateX(-50%);font-family:'Space Grotesk',sans-serif;font-size:0.6rem;letter-spacing:3px;color:rgba(255,255,255,0.4);white-space:nowrap;text-transform:uppercase}
 .cat-badge{position:absolute;top:46px;right:12px;background:rgba(0,229,255,0.9);color:var(--black);font-size:0.55rem;font-weight:700;letter-spacing:1px;padding:3px 8px;text-transform:uppercase;font-family:'Space Grotesk',sans-serif}
 .cat-badge.mag{background:rgba(255,45,120,0.9);color:var(--white)}
-
-.category-svc-icon{position:absolute;bottom:76px;left:50%;transform:translateX(-50%);width:110px;height:110px;transition:transform 0.4s ease}
-.category-card:hover .category-svc-icon{transform:translateX(-50%) scale(1.12) translateY(-8px)}
-
+.category-svc-icon{position:absolute;bottom:76px;left:50%;transform:translateX(-50%);width:110px;height:110px;transition:transform 0.5s cubic-bezier(0.34,1.56,0.64,1)}
+.category-card:hover .category-svc-icon{transform:translateX(-50%) scale(1.15) translateY(-10px)}
 .category-name{position:absolute;bottom:28px;left:0;right:0;text-align:center;font-family:'Orbitron',monospace;font-size:1.1rem;letter-spacing:3px;color:var(--white);font-weight:700}
-.category-link{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);font-size:0.55rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);white-space:nowrap;font-family:'Space Grotesk',sans-serif}
+.category-link{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);font-size:0.55rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);white-space:nowrap;font-family:'Space Grotesk',sans-serif;transition:color 0.3s,opacity 0.3s;opacity:0}
+.category-card:hover .category-link{opacity:1;color:var(--cyan)}
 
 /* ═══ MENU ═══ */
 #menu{background:var(--dark);padding:100px 80px;position:relative}
@@ -230,7 +352,7 @@ nav::after{content:'';position:absolute;bottom:0;left:0;width:30%;height:1px;bac
 .section-header h2 em{font-style:normal;color:var(--cyan)}
 
 .menu-tabs-bar{display:flex;justify-content:center;gap:0;margin-bottom:50px;border-bottom:1px solid rgba(0,229,255,0.12)}
-.menu-tab-btn{background:none;border:none;padding:14px 34px;font-size:0.68rem;letter-spacing:3px;text-transform:uppercase;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--muted);cursor:pointer;position:relative;transition:color 0.3s}
+.menu-tab-btn{background:none;border:none;padding:14px 34px;font-size:0.68rem;letter-spacing:3px;text-transform:uppercase;font-weight:700;font-family:'Space Grotesk',sans-serif;color:var(--muted);cursor:none;position:relative;transition:color 0.3s}
 .menu-tab-btn::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;background:var(--cyan);transform:scaleX(0);transition:transform 0.3s}
 .menu-tab-btn.active{color:var(--cyan)}
 .menu-tab-btn.active::after{transform:scaleX(1)}
@@ -240,10 +362,10 @@ nav::after{content:'';position:absolute;bottom:0;left:0;width:30%;height:1px;bac
 .menu-panel.active{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;animation:fadeIn 0.4s ease;background:rgba(0,229,255,0.05)}
 @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .menu-column{background:var(--dark);padding:0}
-.menu-item{padding:22px 26px;border-bottom:1px solid rgba(0,229,255,0.06);transition:background 0.2s;position:relative}
+.menu-item{padding:22px 26px;border-bottom:1px solid rgba(0,229,255,0.06);transition:background 0.2s,transform 0.2s;position:relative;transform-origin:left center}
 .menu-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--cyan);transform:scaleY(0);transition:transform 0.3s;transform-origin:bottom}
 .menu-item:last-child{border-bottom:none}
-.menu-item:hover{background:rgba(0,229,255,0.04)}
+.menu-item:hover{background:rgba(0,229,255,0.04);transform:translateX(4px)}
 .menu-item:hover::before{transform:scaleY(1)}
 .menu-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .menu-item-name{font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--white);font-family:'Space Grotesk',sans-serif}
@@ -253,50 +375,44 @@ nav::after{content:'';position:absolute;bottom:0;left:0;width:30%;height:1px;bac
 /* ═══ REVIEWS ═══ */
 #reviews{background:var(--black);padding:100px 80px;position:relative;overflow:hidden}
 #reviews::before{content:'"';position:absolute;top:-60px;left:20px;font-family:'Orbitron',monospace;font-size:28rem;color:rgba(0,229,255,0.03);line-height:1;pointer-events:none}
-
 .reviews-header{text-align:center;margin-bottom:70px}
 .reviews-header .eyebrow{font-size:0.65rem;letter-spacing:5px;text-transform:uppercase;color:var(--cyan);font-weight:700;margin-bottom:16px;font-family:'Space Grotesk',sans-serif;display:flex;align-items:center;justify-content:center;gap:12px}
 .reviews-header .eyebrow::before,.reviews-header .eyebrow::after{content:'//';opacity:0.4}
 .reviews-header h2{font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;color:var(--white)}
-
 .reviews-carousel-wrap{overflow:hidden}
-.reviews-track{display:flex;transition:transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94)}
-.review-card{flex:0 0 calc(33.333% - 16px);margin-right:24px;background:rgba(0,229,255,0.03);border:1px solid rgba(0,229,255,0.1);padding:36px 32px;position:relative;transition:border-color 0.3s,transform 0.3s,box-shadow 0.3s;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px))}
+.reviews-track{display:flex;transition:transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94)}
+.review-card{flex:0 0 calc(33.333% - 16px);margin-right:24px;background:rgba(0,229,255,0.03);border:1px solid rgba(0,229,255,0.1);padding:36px 32px;position:relative;transition:border-color 0.3s,transform 0.4s,box-shadow 0.4s;clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px))}
 .review-card::before{content:'';position:absolute;top:0;right:0;width:0;height:0;border-style:solid;border-width:0 16px 16px 0;border-color:transparent rgba(0,229,255,0.2) transparent transparent}
-.review-card:hover{border-color:rgba(0,229,255,0.35);transform:translateY(-6px);box-shadow:0 20px 40px rgba(0,0,0,0.4),0 0 30px rgba(0,229,255,0.08)}
+.review-card:hover{border-color:rgba(0,229,255,0.35);transform:translateY(-8px) scale(1.01);box-shadow:0 30px 60px rgba(0,0,0,0.5),0 0 40px rgba(0,229,255,0.08)}
 .review-stars{color:var(--gold);font-size:1rem;letter-spacing:3px;margin-bottom:18px;text-shadow:0 0 10px rgba(240,192,96,0.4)}
 .review-text{font-size:0.95rem;line-height:1.8;color:rgba(200,220,240,0.65);margin-bottom:28px;font-style:italic;letter-spacing:0.2px}
 .review-author{display:flex;align-items:center;gap:14px}
 .review-avatar{width:44px;height:44px;border-radius:50%;background:rgba(0,229,255,0.1);border:1px solid rgba(0,229,255,0.3);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:1rem;color:var(--cyan);font-weight:700}
 .review-name{font-weight:700;font-size:0.85rem;color:var(--white);margin-bottom:2px;font-family:'Space Grotesk',sans-serif;letter-spacing:1px}
 .review-role{font-size:0.68rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
-
 .carousel-controls{display:flex;justify-content:center;align-items:center;gap:16px;margin-top:48px}
-.carousel-btn{width:48px;height:48px;border:1px solid rgba(0,229,255,0.3);background:none;color:var(--cyan);font-size:1.1rem;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;clip-path:polygon(6px 0%,100% 0%,100% calc(100% - 6px),calc(100% - 6px) 100%,0% 100%,0% 6px)}
+.carousel-btn{width:48px;height:48px;border:1px solid rgba(0,229,255,0.3);background:none;color:var(--cyan);font-size:1.1rem;cursor:none;transition:all 0.3s;display:flex;align-items:center;justify-content:center;clip-path:polygon(6px 0%,100% 0%,100% calc(100% - 6px),calc(100% - 6px) 100%,0% 100%,0% 6px)}
 .carousel-btn:hover{background:var(--cyan);color:var(--black)}
 .carousel-dots{display:flex;gap:8px}
-.carousel-dot{width:8px;height:8px;border-radius:50%;background:rgba(0,229,255,0.2);cursor:pointer;transition:all 0.3s;border:none}
+.carousel-dot{width:8px;height:8px;border-radius:50%;background:rgba(0,229,255,0.2);cursor:none;transition:all 0.3s;border:none}
 .carousel-dot.active{background:var(--cyan);width:24px;border-radius:4px;box-shadow:0 0 8px rgba(0,229,255,0.5)}
 
-/* ═══ GALLERY / PORTFOLIO ═══ */
+/* ═══ GALLERY ═══ */
 #gallery-section{background:var(--darker);padding:100px 80px;position:relative}
 #gallery-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--magenta),transparent)}
-
 .gallery-header{text-align:center;margin-bottom:60px}
 .gallery-header .eyebrow{font-size:0.65rem;letter-spacing:5px;text-transform:uppercase;color:var(--magenta);font-weight:700;margin-bottom:16px;font-family:'Space Grotesk',sans-serif;display:flex;align-items:center;justify-content:center;gap:12px}
 .gallery-header .eyebrow::before,.gallery-header .eyebrow::after{content:'//';opacity:0.4;color:var(--magenta)}
 .gallery-header h2{font-family:'Orbitron',monospace;font-size:clamp(2rem,4vw,3rem);font-weight:900;color:var(--white);text-transform:uppercase}
-
 .gallery-filter-bar{display:flex;justify-content:center;gap:10px;margin-bottom:48px;flex-wrap:wrap}
-.gf-btn{background:none;border:1px solid rgba(0,229,255,0.2);color:var(--muted);padding:8px 22px;font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:700;transition:all 0.3s}
-.gf-btn:hover,.gf-btn.active{background:var(--cyan);border-color:var(--cyan);color:var(--black);box-shadow:0 0 16px rgba(0,229,255,0.3)}
-
+.gf-btn{background:none;border:1px solid rgba(0,229,255,0.2);color:var(--muted);padding:8px 22px;font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;cursor:none;font-family:'Space Grotesk',sans-serif;font-weight:700;transition:all 0.3s}
+.gf-btn:hover,.gf-btn.active{background:var(--cyan);border-color:var(--cyan);color:var(--black);box-shadow:0 0 20px rgba(0,229,255,0.3)}
 .gallery-masonry{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,260px);gap:4px}
-.gallery-item{overflow:hidden;position:relative;cursor:pointer;background:var(--dark)}
+.gallery-item{overflow:hidden;position:relative;cursor:none;background:var(--dark);transition:transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94)}
 .gallery-item:first-child{grid-column:span 2}
 .gallery-item svg{width:100%;height:100%;object-fit:cover;transition:transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94)}
-.gallery-item:hover svg{transform:scale(1.04)}
-.gallery-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(3,5,10,0.9) 0%,rgba(0,229,255,0.05) 100%);display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:24px;opacity:0;transition:opacity 0.4s}
+.gallery-item:hover svg{transform:scale(1.06)}
+.gallery-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(3,5,10,0.95) 0%,rgba(0,229,255,0.05) 100%);display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:24px;opacity:0;transition:opacity 0.4s}
 .gallery-item:hover .gallery-overlay{opacity:1}
 .gallery-overlay-title{font-family:'Orbitron',monospace;font-size:1.2rem;letter-spacing:3px;color:var(--white);margin-bottom:4px;font-weight:700}
 .gallery-overlay-sub{font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);font-weight:700;font-family:'Space Grotesk',sans-serif}
@@ -306,9 +422,9 @@ nav::after{content:'';position:absolute;bottom:0;left:0;width:30%;height:1px;bac
 #lightbox{position:fixed;inset:0;background:rgba(3,5,10,0.97);z-index:9000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s}
 #lightbox.open{opacity:1;pointer-events:all}
 #lightbox .lb-content{max-width:85vw;max-height:85vh;border:1px solid rgba(0,229,255,0.2)}
-.lb-close{position:absolute;top:24px;right:32px;background:none;border:1px solid rgba(0,229,255,0.3);color:var(--cyan);font-size:1.2rem;width:44px;height:44px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s}
+.lb-close{position:absolute;top:24px;right:32px;background:none;border:1px solid rgba(0,229,255,0.3);color:var(--cyan);font-size:1.2rem;width:44px;height:44px;cursor:none;display:flex;align-items:center;justify-content:center;transition:all 0.3s}
 .lb-close:hover{background:var(--cyan);color:var(--black)}
-.lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:none;border:1px solid rgba(0,229,255,0.3);color:var(--cyan);font-size:1.2rem;width:52px;height:52px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:none;border:1px solid rgba(0,229,255,0.3);color:var(--cyan);font-size:1.2rem;width:52px;height:52px;cursor:none;display:flex;align-items:center;justify-content:center;transition:all 0.3s}
 .lb-nav:hover{background:var(--cyan);color:var(--black)}
 .lb-prev{left:32px}.lb-next{right:32px}
 .lb-caption{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);font-family:'Space Grotesk',sans-serif;font-size:0.75rem;letter-spacing:3px;color:var(--muted);text-align:center;text-transform:uppercase}
@@ -316,11 +432,10 @@ nav::after{content:'';position:absolute;bottom:0;left:0;width:30%;height:1px;bac
 /* ═══ STATS ═══ */
 #stats{background:var(--cyan);padding:60px 80px;display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;overflow:hidden}
 #stats::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(0,0,0,0.06) 60px);pointer-events:none}
-.stat-item{text-align:center;padding:20px;border-right:1px solid rgba(0,0,0,0.12);cursor:default;transition:background 0.3s}
+.stat-item{text-align:center;padding:20px;border-right:1px solid rgba(0,0,0,0.12);cursor:default;transition:background 0.3s,transform 0.3s}
 .stat-item:last-child{border-right:none}
-.stat-item:hover{background:rgba(0,0,0,0.06)}
-.stat-number{font-family:'Orbitron',monospace;font-size:3.5rem;line-height:1;color:var(--black);margin-bottom:8px;font-weight:900;transition:transform 0.3s}
-.stat-item:hover .stat-number{transform:scale(1.05)}
+.stat-item:hover{background:rgba(0,0,0,0.06);transform:scale(1.03)}
+.stat-number{font-family:'Orbitron',monospace;font-size:3.5rem;line-height:1;color:var(--black);margin-bottom:8px;font-weight:900}
 .stat-label{font-size:0.68rem;letter-spacing:3px;text-transform:uppercase;color:rgba(0,0,0,0.5);font-weight:700;font-family:'Space Grotesk',sans-serif}
 .stat-icon{font-size:1.4rem;margin-bottom:10px}
 
@@ -331,11 +446,11 @@ nav::after{content:'';position:absolute;bottom:0;left:0;width:30%;height:1px;bac
 .res-text h2{font-family:'Orbitron',monospace;font-size:clamp(1.6rem,2.8vw,2.4rem);font-weight:900;color:var(--white);margin-bottom:10px;text-transform:uppercase}
 .res-text p{font-size:1rem;color:rgba(200,220,240,0.5);line-height:1.7}
 .res-form{display:flex;flex-wrap:wrap;gap:12px;flex:1;justify-content:flex-end}
-.res-input{background:rgba(0,229,255,0.04);border:1px solid rgba(0,229,255,0.15);color:var(--white);padding:13px 18px;font-size:0.82rem;font-family:'Rajdhani',sans-serif;outline:none;width:176px;transition:border-color 0.3s,background 0.3s}
-.res-input:focus{border-color:var(--cyan);background:rgba(0,229,255,0.07)}
+.res-input{background:rgba(0,229,255,0.04);border:1px solid rgba(0,229,255,0.15);color:var(--white);padding:13px 18px;font-size:0.82rem;font-family:'Rajdhani',sans-serif;outline:none;width:176px;transition:border-color 0.3s,background 0.3s,box-shadow 0.3s}
+.res-input:focus{border-color:var(--cyan);background:rgba(0,229,255,0.07);box-shadow:0 0 20px rgba(0,229,255,0.1)}
 .res-input::placeholder{color:var(--muted)}
-.res-submit{background:var(--cyan);color:var(--black);border:none;padding:13px 30px;font-size:0.68rem;letter-spacing:3px;text-transform:uppercase;font-weight:700;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all 0.3s;clip-path:polygon(6px 0%,100% 0%,100% calc(100% - 6px),calc(100% - 6px) 100%,0% 100%,0% 6px)}
-.res-submit:hover{background:var(--white);box-shadow:0 0 20px rgba(0,229,255,0.4)}
+.res-submit{background:var(--cyan);color:var(--black);border:none;padding:13px 30px;font-size:0.68rem;letter-spacing:3px;text-transform:uppercase;font-weight:700;cursor:none;font-family:'Space Grotesk',sans-serif;transition:all 0.3s;clip-path:polygon(6px 0%,100% 0%,100% calc(100% - 6px),calc(100% - 6px) 100%,0% 100%,0% 6px)}
+.res-submit:hover{background:var(--white);box-shadow:0 0 30px rgba(0,229,255,0.5)}
 
 /* ═══ FOOTER ═══ */
 footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,0.1)}
@@ -369,12 +484,21 @@ footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,
 .drawer-overlay.open{opacity:1;pointer-events:all}
 
 /* ═══ REVEAL ═══ */
-.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal{opacity:0;transform:translateY(32px);transition:opacity 0.8s ease,transform 0.8s cubic-bezier(0.16,1,0.3,1)}
 .reveal.visible{opacity:1;transform:none}
+.reveal-left{opacity:0;transform:translateX(-40px);transition:opacity 0.8s ease,transform 0.8s cubic-bezier(0.16,1,0.3,1)}
+.reveal-left.visible{opacity:1;transform:none}
+.reveal-right{opacity:0;transform:translateX(40px);transition:opacity 0.8s ease,transform 0.8s cubic-bezier(0.16,1,0.3,1)}
+.reveal-right.visible{opacity:1;transform:none}
 
 /* ═══ LOADER ═══ */
 #loader{position:fixed;inset:0;background:var(--black);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;transition:opacity 0.8s ease}
-.loader-logo{font-family:'Orbitron',monospace;font-size:2.6rem;letter-spacing:10px;color:var(--cyan);text-shadow:0 0 40px rgba(0,229,255,0.5)}
+.loader-logo{font-family:'Orbitron',monospace;font-size:2.6rem;letter-spacing:10px;color:var(--cyan);text-shadow:0 0 40px rgba(0,229,255,0.5);animation:loaderGlitch 0.3s step-end infinite}
+@keyframes loaderGlitch{
+  0%,100%{text-shadow:0 0 40px rgba(0,229,255,0.5),0 0 80px rgba(0,229,255,0.2)}
+  25%{text-shadow:-2px 0 rgba(255,45,120,0.5),2px 0 rgba(0,229,255,0.5)}
+  75%{text-shadow:2px 0 rgba(255,45,120,0.3),-2px 0 rgba(0,229,255,0.3)}
+}
 .loader-sub{font-family:'Space Grotesk',sans-serif;font-size:0.65rem;letter-spacing:6px;color:var(--muted);text-transform:uppercase}
 .loader-bar-wrap{width:200px;height:1px;background:rgba(0,229,255,0.15)}
 .loader-bar{height:100%;background:var(--cyan);width:0%;animation:loadBar 1.5s ease forwards;box-shadow:0 0 8px var(--cyan)}
@@ -382,24 +506,26 @@ footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,
 
 /* ═══ MOBILE ≤768px ═══ */
 @media(max-width:768px){
+  body{cursor:auto}
+  .cursor,.cursor-trail{display:none}
   nav{padding:0 20px;height:60px}
   .nav-links,.nav-status{display:none}
   .hamburger{display:flex}
   .btn-book{padding:9px 16px;font-size:0.6rem}
   .logo{font-size:1.1rem;letter-spacing:3px}
   #hero{flex-direction:column;justify-content:flex-end;height:100svh;min-height:600px}
-  #canvas-container{position:absolute;top:0;left:0;width:100%;height:55%;z-index:1}
-  .hero-vignette{width:100%;background:linear-gradient(180deg,transparent 30%,var(--black) 75%)}
-  .hero-content{position:relative;z-index:10;padding:0 24px 40px;max-width:100%;width:100%}
+  #hero-canvas{height:100%}
+  .hero-vignette{width:100%;background:linear-gradient(180deg,transparent 30%,var(--black) 72%)}
+  .hero-content{padding:0 24px 40px;max-width:100%;width:100%}
   .hero-title{font-size:clamp(2rem,9vw,3rem)}
   .hero-subtitle{font-size:0.9rem;margin:14px 0 24px;max-width:100%}
   .hero-ctas{flex-wrap:wrap;gap:12px}
+  .hero-hud{display:none}
   .price-badge{bottom:auto;top:46%;right:12px;padding:10px 14px}
   .price-badge .amount{font-size:1.3rem}
   .scroll-indicator{display:none}
   #special-deal{flex-direction:column;padding:60px 24px;gap:36px;text-align:center}
   .deal-desc{max-width:100%}
-  .deal-stamp{right:50%;transform:translateX(50%);bottom:-20px}
   #about-categories{padding:60px 0 0}
   .about-section{flex-direction:column;padding:0 24px 60px;gap:36px;text-align:center}
   .about-image-ring{width:200px;height:200px;margin:0 auto}
@@ -407,12 +533,9 @@ footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,
   .about-features{flex-direction:column;gap:20px;align-items:center}
   .categories-strip{grid-template-columns:repeat(2,1fr)}
   .categories-strip .category-card:last-child{grid-column:span 2}
-  .category-svc-icon{width:80px;height:80px}
   #menu{padding:60px 20px}
   .section-header{margin-bottom:36px}
   .menu-tabs-bar{overflow-x:auto;justify-content:flex-start;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
-  .menu-tabs-bar::-webkit-scrollbar{display:none}
-  .menu-tab-btn{padding:12px 18px;font-size:0.62rem;white-space:nowrap}
   .menu-panel.active{grid-template-columns:1fr}
   #reviews{padding:60px 20px}
   .review-card{flex:0 0 85vw;margin-right:16px;padding:24px 20px}
@@ -420,7 +543,7 @@ footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,
   .gallery-masonry{grid-template-columns:1fr 1fr;grid-template-rows:180px 180px 180px;gap:3px}
   .gallery-item:first-child{grid-column:span 2}
   #stats{grid-template-columns:repeat(2,1fr);padding:40px 20px}
-  .stat-item{border-right:none;border-bottom:1px solid rgba(0,0,0,0.1);padding:18px 10px}
+  .stat-item{border-right:none;border-bottom:1px solid rgba(0,0,0,0.1)}
   .stat-item:nth-child(odd){border-right:1px solid rgba(0,0,0,0.1)}
   .stat-item:nth-child(3),.stat-item:nth-child(4){border-bottom:none}
   .stat-number{font-size:2.6rem}
@@ -436,7 +559,6 @@ footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,
   nav{padding:0 28px}
   .nav-links{gap:18px}
   .nav-status{display:none}
-  #canvas-container{width:50%}
   .hero-content{padding-left:40px;max-width:480px}
   #special-deal{padding:70px 40px;gap:40px}
   .about-section{padding:0 40px 60px;gap:40px}
@@ -456,6 +578,10 @@ footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,
 </head>
 <body>
 
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-trail" id="cursorTrail"></div>
+
 <!-- LOADER -->
 <div id="loader">
   <div class="loader-logo">NEXVORA</div>
@@ -464,7 +590,7 @@ footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,
 </div>
 
 <!-- NAV -->
-<nav>
+<nav id="mainNav">
   <a href="#" class="logo">
     <div class="logo-mark">
       <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -514,40 +640,34 @@ footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,
 </div>
 <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
 
-<!-- HERO -->
+<!-- ════════════════════════
+     HERO — 3D CINEMATIC
+════════════════════════ -->
 <section id="hero">
-  <div class="hero-ambient"></div>
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-atmo"></div>
   <div class="hero-vignette"></div>
-
-  <div id="canvas-container">
-    <model-viewer
-      id="pizza-model"
-      src="car.glb"
-      alt="3D Digital Model"
-      auto-rotate
-      auto-rotate-delay="0"
-      rotation-per-second="30deg"
-      camera-controls
-      disable-zoom
-      shadow-intensity="1"
-      exposure="1.2"
-      environment-image="neutral"
-    ></model-viewer>
-  </div>
+  <div class="hero-vignette-bottom"></div>
 
   <div class="hero-content">
     <div class="hero-badge">⬡ Award-Winning Agency Since 2005</div>
     <div class="hero-eyeline">Projects Starting From $999</div>
     <h1 class="hero-title">
-      We Build<br>
-      <span class="accent">Digital</span>
-      <span class="accent2">Futures</span>
+      <span class="line-wrap">We Build</span>
+      <span class="accent line-wrap">Digital</span>
+      <span class="accent2 line-wrap">Futures</span>
     </h1>
     <p class="hero-subtitle">Where bold ideas meet flawless execution. We craft websites, apps, and digital experiences that move businesses forward — faster.</p>
     <div class="hero-ctas">
       <a href="#menu" class="btn-primary">View Our Services</a>
       <a href="#about-categories" class="btn-secondary">Our Story</a>
     </div>
+  </div>
+
+  <div class="hero-hud">
+    <div class="hud-node"><div class="hud-line"></div>350+ Projects</div>
+    <div class="hud-node"><div class="hud-line"></div>12k+ Clients</div>
+    <div class="hud-node"><div class="hud-line"></div>4.9★ Rating</div>
   </div>
 
   <div class="price-badge">
@@ -581,66 +701,47 @@ footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,
 
 <!-- SPECIAL DEAL -->
 <section id="special-deal">
-  <div class="deal-text reveal">
+  <div class="deal-text reveal-left">
     <div class="deal-eyebrow">Limited Time</div>
     <h2 class="deal-title">Launch Package<br>For New Businesses</h2>
     <div class="deal-price-line">COMPLETE STARTER WEBSITE ONLY <strong>$999</strong></div>
     <p class="deal-desc">Get a fully custom, mobile-first website with up to 10 pages, SEO setup, and 30 days of post-launch support — everything you need to go live fast.</p>
     <a href="#menu" class="btn-primary">Claim This Offer</a>
   </div>
-  <div class="deal-image-wrapper reveal">
-    <!-- SVG: Launch/Rocket illustration for the deal section -->
-    <div class="svc-illustration">
+  <div class="deal-image-wrapper reveal-right">
+    <div class="svc-illustration deal-card-3d" id="dealCard">
       <svg viewBox="0 0 520 340" xmlns="http://www.w3.org/2000/svg">
         <rect width="520" height="340" fill="#050810"/>
-        <!-- Grid -->
         <defs>
           <pattern id="grid1" width="30" height="30" patternUnits="userSpaceOnUse">
             <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(0,229,255,0.07)" stroke-width="0.5"/>
           </pattern>
         </defs>
         <rect width="520" height="340" fill="url(#grid1)"/>
-        <!-- Ground glow -->
         <ellipse cx="260" cy="310" rx="180" ry="28" fill="rgba(0,229,255,0.06)"/>
-        <!-- Rocket body -->
         <path d="M260,60 C240,80 232,130 232,170 L288,170 C288,130 280,80 260,60Z" fill="#0a1428" stroke="#00e5ff" stroke-width="1.5"/>
-        <!-- Rocket window -->
         <circle cx="260" cy="130" r="18" fill="none" stroke="#00e5ff" stroke-width="1.5"/>
         <circle cx="260" cy="130" r="12" fill="rgba(0,229,255,0.15)"/>
         <circle cx="260" cy="130" r="6" fill="rgba(0,229,255,0.5)"/>
-        <!-- Rocket fins -->
         <path d="M232,170 L210,200 L232,195Z" fill="#0a1428" stroke="#00e5ff" stroke-width="1"/>
         <path d="M288,170 L310,200 L288,195Z" fill="#0a1428" stroke="#00e5ff" stroke-width="1"/>
-        <!-- Rocket bottom -->
         <rect x="240" y="170" width="40" height="20" fill="#0a1428" stroke="#00e5ff" stroke-width="1"/>
-        <!-- Flame -->
         <path d="M248,190 Q252,230 260,250 Q268,230 272,190Z" fill="none" stroke="#ff2d78" stroke-width="1.5" opacity="0.9"/>
         <path d="M252,190 Q255,220 260,235 Q265,220 268,190Z" fill="rgba(255,45,120,0.3)"/>
         <path d="M255,190 Q257,210 260,220 Q263,210 265,190Z" fill="rgba(255,200,0,0.4)"/>
-        <!-- Stars -->
         <circle cx="80" cy="50" r="1.5" fill="#00e5ff" opacity="0.8"/>
         <circle cx="150" cy="90" r="1" fill="white" opacity="0.5"/>
         <circle cx="400" cy="40" r="1.5" fill="#00e5ff" opacity="0.6"/>
         <circle cx="450" cy="110" r="1" fill="white" opacity="0.4"/>
-        <circle cx="100" cy="200" r="1.5" fill="#ff2d78" opacity="0.5"/>
-        <circle cx="380" cy="160" r="1" fill="white" opacity="0.5"/>
-        <circle cx="60" cy="150" r="1" fill="#00e5ff" opacity="0.3"/>
-        <circle cx="470" cy="200" r="1.5" fill="#00e5ff" opacity="0.4"/>
-        <!-- Orbit rings -->
         <ellipse cx="260" cy="160" rx="100" ry="30" fill="none" stroke="rgba(0,229,255,0.1)" stroke-width="1" stroke-dasharray="4 4"/>
         <ellipse cx="260" cy="160" rx="140" ry="45" fill="none" stroke="rgba(0,229,255,0.06)" stroke-width="1" stroke-dasharray="6 6"/>
-        <!-- Side data panels -->
         <rect x="50" y="120" width="100" height="60" fill="rgba(0,229,255,0.04)" stroke="rgba(0,229,255,0.15)" stroke-width="0.8" rx="2"/>
         <line x1="62" y1="136" x2="138" y2="136" stroke="rgba(0,229,255,0.4)" stroke-width="1"/>
         <line x1="62" y1="148" x2="118" y2="148" stroke="rgba(0,229,255,0.2)" stroke-width="1"/>
         <line x1="62" y1="158" x2="128" y2="158" stroke="rgba(0,229,255,0.2)" stroke-width="1"/>
-        <line x1="62" y1="168" x2="108" y2="168" stroke="rgba(0,229,255,0.15)" stroke-width="1"/>
         <rect x="370" y="100" width="100" height="80" fill="rgba(255,45,120,0.03)" stroke="rgba(255,45,120,0.15)" stroke-width="0.8" rx="2"/>
         <line x1="382" y1="116" x2="458" y2="116" stroke="rgba(255,45,120,0.4)" stroke-width="1"/>
         <line x1="382" y1="128" x2="438" y2="128" stroke="rgba(255,45,120,0.2)" stroke-width="1"/>
-        <line x1="382" y1="140" x2="448" y2="140" stroke="rgba(255,45,120,0.2)" stroke-width="1"/>
-        <line x1="382" y1="152" x2="420" y2="152" stroke="rgba(255,45,120,0.15)" stroke-width="1"/>
-        <!-- Label -->
         <text x="260" y="300" font-family="monospace" font-size="9" fill="rgba(0,229,255,0.4)" text-anchor="middle" letter-spacing="4">NEXVORA // LAUNCH PACKAGE</text>
       </svg>
     </div>
@@ -650,9 +751,8 @@ footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,
 
 <!-- ABOUT + CATEGORIES -->
 <section id="about-categories">
-  <div class="about-section reveal">
-    <div class="about-image-ring">
-      <!-- Portrait SVG: abstract futuristic head/avatar -->
+  <div class="about-section">
+    <div class="about-image-ring reveal-left">
       <svg class="portrait-svg" viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
         <rect width="280" height="280" fill="#050c1a"/>
         <defs>
@@ -666,33 +766,23 @@ footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,
         </defs>
         <rect width="280" height="280" fill="url(#grid2)"/>
         <rect width="280" height="280" fill="url(#faceGlow)"/>
-        <!-- Head outline -->
         <ellipse cx="140" cy="120" rx="60" ry="72" fill="rgba(8,20,40,0.9)" stroke="#00e5ff" stroke-width="1.5"/>
-        <!-- Face circuit lines -->
         <line x1="140" y1="48" x2="140" y2="30" stroke="#00e5ff" stroke-width="1" opacity="0.5"/>
         <circle cx="140" cy="28" r="3" fill="#00e5ff" opacity="0.6"/>
         <line x1="100" y1="75" x2="80" y2="65" stroke="#00e5ff" stroke-width="0.8" opacity="0.4"/>
         <line x1="180" y1="75" x2="200" y2="65" stroke="#00e5ff" stroke-width="0.8" opacity="0.4"/>
-        <!-- Eyes -->
         <rect x="115" y="105" width="20" height="12" rx="2" fill="rgba(0,229,255,0.2)" stroke="#00e5ff" stroke-width="1"/>
         <rect x="145" y="105" width="20" height="12" rx="2" fill="rgba(0,229,255,0.2)" stroke="#00e5ff" stroke-width="1"/>
         <rect x="120" y="108" width="10" height="6" rx="1" fill="#00e5ff" opacity="0.8"/>
         <rect x="150" y="108" width="10" height="6" rx="1" fill="#00e5ff" opacity="0.8"/>
-        <!-- Nose -->
         <path d="M136,125 L140,140 L144,125" fill="none" stroke="rgba(0,229,255,0.4)" stroke-width="1"/>
-        <!-- Mouth -->
         <path d="M120,155 Q140,165 160,155" fill="none" stroke="#00e5ff" stroke-width="1.2"/>
-        <!-- Neck -->
         <rect x="128" y="190" width="24" height="30" fill="rgba(8,20,40,0.9)" stroke="#00e5ff" stroke-width="1"/>
-        <!-- Shoulders -->
         <path d="M70,230 Q100,215 128,220 L128,280 L70,280Z" fill="#050c1a" stroke="#00e5ff" stroke-width="1"/>
         <path d="M210,230 Q180,215 152,220 L152,280 L210,280Z" fill="#050c1a" stroke="#00e5ff" stroke-width="1"/>
-        <!-- Chest panel -->
         <rect x="105" y="235" width="70" height="45" rx="2" fill="rgba(0,229,255,0.05)" stroke="rgba(0,229,255,0.2)" stroke-width="0.8"/>
         <line x1="115" y1="248" x2="165" y2="248" stroke="rgba(0,229,255,0.3)" stroke-width="1"/>
-        <line x1="115" y1="258" x2="155" y2="258" stroke="rgba(0,229,255,0.2)" stroke-width="1"/>
         <circle cx="140" cy="270" r="5" fill="none" stroke="#00e5ff" stroke-width="1" opacity="0.6"/>
-        <!-- Scan line effect -->
         <rect x="80" y="48" width="120" height="1" fill="rgba(0,229,255,0.3)" opacity="0.6">
           <animateTransform attributeName="transform" type="translate" values="0,0;0,192;0,0" dur="3s" repeatCount="indefinite"/>
         </rect>
@@ -701,7 +791,7 @@ footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,
       <div class="ring-decoration2"></div>
       <div class="quality-badge">Top<br>Rated<br>★★★</div>
     </div>
-    <div class="about-text">
+    <div class="about-text reveal-right">
       <div class="section-eyebrow">Learn About Nexvora</div>
       <h2 class="about-title">Innovative &amp; Reliable <span class="hl">Digital Solutions</span><br>For Your Business</h2>
       <p class="about-desc">Welcome to Nexvora Digital, where cutting-edge technology meets strategic creativity. At the intersection of design and engineering, we help brands thrive in the digital age with precision-built experiences.</p>
@@ -726,42 +816,27 @@ footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,
 
   <!-- CATEGORIES STRIP -->
   <div class="categories-strip">
-
-    <!-- WEB DEV -->
     <div class="category-card">
       <div class="cat-bg">
         <svg viewBox="0 0 200 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;position:absolute;inset:0">
           <rect width="200" height="260" fill="#030810"/>
           <rect x="20" y="50" width="160" height="110" rx="4" fill="rgba(0,229,255,0.05)" stroke="rgba(0,229,255,0.2)" stroke-width="0.8"/>
-          <!-- Browser bar -->
           <rect x="20" y="50" width="160" height="18" fill="rgba(0,229,255,0.08)"/>
           <circle cx="33" cy="59" r="4" fill="rgba(255,45,120,0.6)"/>
           <circle cx="46" cy="59" r="4" fill="rgba(240,192,96,0.4)"/>
           <circle cx="59" cy="59" r="4" fill="rgba(0,229,255,0.4)"/>
-          <rect x="68" y="54" width="100" height="10" rx="2" fill="rgba(0,229,255,0.1)" stroke="rgba(0,229,255,0.15)" stroke-width="0.5"/>
-          <!-- Code lines -->
           <rect x="30" y="80" width="30" height="4" rx="1" fill="rgba(255,45,120,0.5)"/>
           <rect x="64" y="80" width="50" height="4" rx="1" fill="rgba(0,229,255,0.4)"/>
-          <rect x="118" y="80" width="40" height="4" rx="1" fill="rgba(240,192,96,0.3)"/>
           <rect x="36" y="90" width="70" height="4" rx="1" fill="rgba(0,229,255,0.25)"/>
-          <rect x="110" y="90" width="50" height="4" rx="1" fill="rgba(0,229,255,0.15)"/>
           <rect x="30" y="100" width="20" height="4" rx="1" fill="rgba(0,229,255,0.4)"/>
           <rect x="54" y="100" width="90" height="4" rx="1" fill="rgba(200,220,240,0.15)"/>
-          <rect x="36" y="112" width="55" height="4" rx="1" fill="rgba(255,45,120,0.3)"/>
-          <rect x="95" y="112" width="65" height="4" rx="1" fill="rgba(0,229,255,0.2)"/>
-          <rect x="30" y="122" width="45" height="4" rx="1" fill="rgba(240,192,96,0.25)"/>
-          <rect x="79" y="122" width="80" height="4" rx="1" fill="rgba(0,229,255,0.15)"/>
-          <rect x="30" y="134" width="70" height="4" rx="1" fill="rgba(0,229,255,0.3)"/>
-          <rect x="104" y="134" width="30" height="4" rx="1" fill="rgba(255,45,120,0.2)"/>
-          <rect x="30" y="144" width="100" height="4" rx="1" fill="rgba(0,229,255,0.1)"/>
-          <!-- Cursor blink -->
-          <rect x="30" y="154" width="8" height="8" rx="1" fill="rgba(0,229,255,0.7)">
+          <rect x="30" y="134" width="8" height="8" rx="1" fill="rgba(0,229,255,0.7)">
             <animate attributeName="opacity" values="1;0;1" dur="1.2s" repeatCount="indefinite"/>
           </rect>
         </svg>
       </div>
       <div class="cat-bg-overlay"></div>
-      <div class="category-bg-text">WEB<span class="line2">DEV</span></div>
+      <div class="category-bg-text">WEB DEV</div>
       <div class="category-logo">✦ Nexvora ✦</div>
       <span class="cat-badge">HOT</span>
       <div class="category-svc-icon">
@@ -775,39 +850,27 @@ footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,
           <rect x="33" y="54" width="20" height="3" rx="1" fill="rgba(255,45,120,0.7)"/>
           <rect x="57" y="54" width="22" height="3" rx="1" fill="rgba(0,229,255,0.5)"/>
           <rect x="37" y="61" width="36" height="3" rx="1" fill="rgba(0,229,255,0.35)"/>
-          <rect x="33" y="68" width="28" height="3" rx="1" fill="rgba(240,192,96,0.4)"/>
         </svg>
       </div>
       <div class="category-name">WEB DEV</div>
       <div class="category-link">→ EXPLORE SERVICE</div>
     </div>
-
-    <!-- APP DEV -->
     <div class="category-card">
       <div class="cat-bg">
         <svg viewBox="0 0 200 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;position:absolute;inset:0">
           <rect width="200" height="260" fill="#0a0316"/>
-          <!-- Phone outline -->
           <rect x="65" y="40" width="70" height="130" rx="10" fill="rgba(255,45,120,0.04)" stroke="rgba(255,45,120,0.25)" stroke-width="1"/>
           <rect x="75" y="55" width="50" height="90" rx="3" fill="rgba(255,45,120,0.06)" stroke="rgba(255,45,120,0.15)" stroke-width="0.5"/>
-          <!-- App icons grid -->
           <rect x="80" y="60" width="14" height="14" rx="3" fill="rgba(255,45,120,0.3)"/>
           <rect x="98" y="60" width="14" height="14" rx="3" fill="rgba(0,229,255,0.25)"/>
           <rect x="116" y="60" width="14" height="14" rx="3" fill="rgba(240,192,96,0.2)"/>
           <rect x="80" y="78" width="14" height="14" rx="3" fill="rgba(0,229,255,0.2)"/>
           <rect x="98" y="78" width="14" height="14" rx="3" fill="rgba(255,45,120,0.15)"/>
-          <rect x="116" y="78" width="14" height="14" rx="3" fill="rgba(0,229,255,0.3)"/>
-          <rect x="80" y="96" width="14" height="14" rx="3" fill="rgba(240,192,96,0.25)"/>
-          <rect x="98" y="96" width="14" height="14" rx="3" fill="rgba(0,229,255,0.2)"/>
-          <rect x="116" y="96" width="14" height="14" rx="3" fill="rgba(255,45,120,0.2)"/>
-          <!-- Home bar -->
           <rect x="90" y="158" width="20" height="4" rx="2" fill="rgba(255,45,120,0.4)"/>
-          <!-- Notch -->
-          <rect x="90" y="44" width="20" height="6" rx="3" fill="#0a0316"/>
         </svg>
       </div>
       <div class="cat-bg-overlay"></div>
-      <div class="category-bg-text">APP<span class="line2">DEV</span></div>
+      <div class="category-bg-text">APP DEV</div>
       <div class="category-logo">✦ Nexvora ✦</div>
       <span class="cat-badge mag">-10%</span>
       <div class="category-svc-icon">
@@ -816,98 +879,59 @@ footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,
           <rect x="35" y="22" width="40" height="70" rx="7" fill="rgba(5,8,16,0.95)" stroke="#ff2d78" stroke-width="1.5"/>
           <rect x="42" y="32" width="26" height="42" rx="2" fill="rgba(255,45,120,0.08)"/>
           <circle cx="55" cy="83" r="4" fill="none" stroke="#ff2d78" stroke-width="1.2"/>
-          <rect x="48" y="25" width="14" height="3" rx="1.5" fill="rgba(255,45,120,0.4)"/>
           <rect x="45" y="38" width="8" height="8" rx="2" fill="rgba(255,45,120,0.35)"/>
           <rect x="57" y="38" width="8" height="8" rx="2" fill="rgba(0,229,255,0.25)"/>
-          <rect x="45" y="50" width="8" height="8" rx="2" fill="rgba(0,229,255,0.2)"/>
-          <rect x="57" y="50" width="8" height="8" rx="2" fill="rgba(255,45,120,0.2)"/>
-          <rect x="45" y="62" width="20" height="5" rx="1" fill="rgba(255,45,120,0.25)"/>
         </svg>
       </div>
       <div class="category-name">APP DEV</div>
       <div class="category-link">→ EXPLORE SERVICE</div>
     </div>
-
-    <!-- UI/UX -->
     <div class="category-card">
       <div class="cat-bg">
         <svg viewBox="0 0 200 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;position:absolute;inset:0">
           <rect width="200" height="260" fill="#030810"/>
-          <!-- Wireframe-like UI mockup -->
           <rect x="20" y="40" width="160" height="120" rx="3" fill="rgba(0,229,255,0.03)" stroke="rgba(0,229,255,0.18)" stroke-width="0.8"/>
-          <!-- Header -->
           <rect x="20" y="40" width="160" height="22" fill="rgba(0,229,255,0.06)"/>
-          <circle cx="56" cy="51" r="6" fill="none" stroke="rgba(0,229,255,0.4)" stroke-width="1"/>
-          <rect x="70" y="47" width="60" height="8" rx="2" fill="rgba(0,229,255,0.15)"/>
-          <rect x="155" y="47" width="16" height="8" rx="2" fill="rgba(255,45,120,0.5)"/>
-          <!-- Cards -->
           <rect x="28" y="70" width="70" height="50" rx="3" fill="rgba(0,229,255,0.05)" stroke="rgba(0,229,255,0.12)" stroke-width="0.8"/>
-          <rect x="28" y="70" width="70" height="22" fill="rgba(0,229,255,0.08)"/>
           <rect x="108" y="70" width="64" height="22" rx="3" fill="rgba(255,45,120,0.06)" stroke="rgba(255,45,120,0.15)" stroke-width="0.8"/>
-          <rect x="108" y="96" width="64" height="24" rx="3" fill="rgba(240,192,96,0.05)" stroke="rgba(240,192,96,0.12)" stroke-width="0.8"/>
-          <rect x="36" y="100" width="40" height="4" rx="1" fill="rgba(0,229,255,0.25)"/>
-          <rect x="36" y="108" width="55" height="4" rx="1" fill="rgba(0,229,255,0.15)"/>
-          <!-- Color palette -->
           <rect x="28" y="128" width="12" height="12" rx="2" fill="rgba(0,229,255,0.7)"/>
           <rect x="44" y="128" width="12" height="12" rx="2" fill="rgba(255,45,120,0.7)"/>
           <rect x="60" y="128" width="12" height="12" rx="2" fill="rgba(240,192,96,0.7)"/>
-          <rect x="76" y="128" width="12" height="12" rx="2" fill="rgba(100,80,200,0.7)"/>
-          <rect x="92" y="128" width="12" height="12" rx="2" fill="rgba(0,200,100,0.5)"/>
         </svg>
       </div>
       <div class="cat-bg-overlay"></div>
-      <div class="category-bg-text">UI<span class="line2">UX</span></div>
+      <div class="category-bg-text">UI UX</div>
       <div class="category-logo">✦ Nexvora ✦</div>
       <span class="cat-badge">HOT</span>
       <div class="category-svc-icon">
         <svg viewBox="0 0 110 110" xmlns="http://www.w3.org/2000/svg">
           <circle cx="55" cy="55" r="50" fill="rgba(0,229,255,0.06)" stroke="rgba(0,229,255,0.25)" stroke-width="1"/>
-          <!-- Figma-like icon -->
           <rect x="38" y="25" width="20" height="20" rx="10" fill="rgba(255,45,120,0.5)"/>
           <rect x="58" y="25" width="20" height="20" rx="10" fill="rgba(240,192,96,0.4)"/>
           <rect x="38" y="45" width="20" height="20" rx="0" fill="rgba(0,229,255,0.5)"/>
           <rect x="38" y="65" width="20" height="20" rx="0 0 10 10" fill="rgba(100,80,200,0.4)"/>
           <circle cx="68" cy="55" r="10" fill="rgba(0,229,255,0.35)"/>
-          <line x1="38" y1="45" x2="78" y2="45" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
-          <line x1="38" y1="65" x2="58" y2="65" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
         </svg>
       </div>
       <div class="category-name">UI / UX</div>
       <div class="category-link">→ EXPLORE SERVICE</div>
     </div>
-
-    <!-- CLOUD OPS -->
     <div class="category-card">
       <div class="cat-bg">
         <svg viewBox="0 0 200 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;position:absolute;inset:0">
           <rect width="200" height="260" fill="#0a0316"/>
-          <!-- Server racks -->
           <rect x="40" y="40" width="120" height="16" rx="2" fill="rgba(255,45,120,0.07)" stroke="rgba(255,45,120,0.2)" stroke-width="0.8"/>
           <rect x="40" y="60" width="120" height="16" rx="2" fill="rgba(0,229,255,0.05)" stroke="rgba(0,229,255,0.18)" stroke-width="0.8"/>
           <rect x="40" y="80" width="120" height="16" rx="2" fill="rgba(255,45,120,0.07)" stroke="rgba(255,45,120,0.15)" stroke-width="0.8"/>
-          <rect x="40" y="100" width="120" height="16" rx="2" fill="rgba(0,229,255,0.05)" stroke="rgba(0,229,255,0.12)" stroke-width="0.8"/>
-          <!-- Server LED indicators -->
           <circle cx="50" cy="48" r="3" fill="#00ff88" opacity="0.8"><animate attributeName="opacity" values="0.8;0.2;0.8" dur="2s" repeatCount="indefinite"/></circle>
           <circle cx="50" cy="68" r="3" fill="#00e5ff" opacity="0.8"><animate attributeName="opacity" values="0.8;0.2;0.8" dur="2.3s" repeatCount="indefinite"/></circle>
-          <circle cx="50" cy="88" r="3" fill="#ff2d78" opacity="0.8"><animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.8s" repeatCount="indefinite"/></circle>
-          <circle cx="50" cy="108" r="3" fill="#00ff88" opacity="0.8"><animate attributeName="opacity" values="0.8;0.2;0.8" dur="2.5s" repeatCount="indefinite"/></circle>
-          <!-- Progress bars on servers -->
-          <rect x="62" y="45" width="80" height="6" rx="1" fill="rgba(0,0,0,0.3)"/>
-          <rect x="62" y="45" width="58" height="6" rx="1" fill="rgba(0,229,255,0.5)"/>
-          <rect x="62" y="65" width="80" height="6" rx="1" fill="rgba(0,0,0,0.3)"/>
-          <rect x="62" y="65" width="72" height="6" rx="1" fill="rgba(0,229,255,0.35)"/>
-          <rect x="62" y="85" width="80" height="6" rx="1" fill="rgba(0,0,0,0.3)"/>
-          <rect x="62" y="85" width="45" height="6" rx="1" fill="rgba(255,45,120,0.5)"/>
-          <rect x="62" y="105" width="80" height="6" rx="1" fill="rgba(0,0,0,0.3)"/>
-          <rect x="62" y="105" width="66" height="6" rx="1" fill="rgba(0,229,255,0.4)"/>
-          <!-- Cloud symbol -->
           <ellipse cx="100" cy="155" rx="40" ry="18" fill="rgba(0,229,255,0.06)" stroke="rgba(0,229,255,0.2)" stroke-width="1"/>
           <ellipse cx="80" cy="148" rx="18" ry="14" fill="rgba(0,229,255,0.08)" stroke="rgba(0,229,255,0.15)" stroke-width="0.8"/>
           <ellipse cx="120" cy="148" rx="18" ry="14" fill="rgba(0,229,255,0.08)" stroke="rgba(0,229,255,0.15)" stroke-width="0.8"/>
         </svg>
       </div>
       <div class="cat-bg-overlay"></div>
-      <div class="category-bg-text">CLOUD<span class="line2">OPS</span></div>
+      <div class="category-bg-text">CLOUD OPS</div>
       <div class="category-logo">✦ Nexvora ✦</div>
       <span class="cat-badge mag">-15%</span>
       <div class="category-svc-icon">
@@ -917,53 +941,33 @@ footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,
           <ellipse cx="42" cy="52" rx="18" ry="12" fill="rgba(5,8,16,0.9)" stroke="#ff2d78" stroke-width="1.2"/>
           <ellipse cx="68" cy="52" rx="18" ry="12" fill="rgba(5,8,16,0.9)" stroke="#ff2d78" stroke-width="1.2"/>
           <ellipse cx="55" cy="47" rx="24" ry="12" fill="rgba(5,8,16,0.9)" stroke="#ff2d78" stroke-width="1.5"/>
-          <!-- Download arrows -->
-          <line x1="46" y1="63" x2="46" y2="78" stroke="rgba(255,45,120,0.5)" stroke-width="1.2"/>
-          <path d="M43,75 L46,80 L49,75" fill="none" stroke="rgba(255,45,120,0.5)" stroke-width="1"/>
-          <line x1="55" y1="65" x2="55" y2="82" stroke="rgba(0,229,255,0.5)" stroke-width="1.2"/>
-          <path d="M52,79 L55,84 L58,79" fill="none" stroke="rgba(0,229,255,0.5)" stroke-width="1"/>
-          <line x1="64" y1="63" x2="64" y2="78" stroke="rgba(255,45,120,0.5)" stroke-width="1.2"/>
-          <path d="M61,75 L64,80 L67,75" fill="none" stroke="rgba(255,45,120,0.5)" stroke-width="1"/>
         </svg>
       </div>
       <div class="category-name">CLOUD OPS</div>
       <div class="category-link">→ EXPLORE SERVICE</div>
     </div>
-
-    <!-- SEO & GROWTH -->
     <div class="category-card">
       <div class="cat-bg">
         <svg viewBox="0 0 200 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;position:absolute;inset:0">
           <rect width="200" height="260" fill="#030810"/>
-          <!-- Chart bars -->
           <rect x="30" y="140" width="22" height="60" fill="rgba(0,229,255,0.15)" stroke="rgba(0,229,255,0.3)" stroke-width="0.8"/>
           <rect x="57" y="110" width="22" height="90" fill="rgba(0,229,255,0.2)" stroke="rgba(0,229,255,0.3)" stroke-width="0.8"/>
           <rect x="84" y="80" width="22" height="120" fill="rgba(0,229,255,0.25)" stroke="rgba(0,229,255,0.4)" stroke-width="0.8"/>
           <rect x="111" y="55" width="22" height="145" fill="rgba(0,229,255,0.35)" stroke="rgba(0,229,255,0.5)" stroke-width="0.8"/>
           <rect x="138" y="35" width="22" height="165" fill="rgba(0,229,255,0.5)" stroke="#00e5ff" stroke-width="0.8"/>
-          <!-- Trend line -->
           <polyline points="41,140 68,110 95,80 122,55 149,35" fill="none" stroke="rgba(255,45,120,0.8)" stroke-width="1.5" stroke-dasharray="3 2"/>
-          <!-- Dots on trend line -->
-          <circle cx="41" cy="140" r="3" fill="#ff2d78"/>
-          <circle cx="68" cy="110" r="3" fill="#ff2d78"/>
-          <circle cx="95" cy="80" r="3" fill="#ff2d78"/>
-          <circle cx="122" cy="55" r="3" fill="#ff2d78"/>
           <circle cx="149" cy="35" r="4" fill="#ff2d78"><animate attributeName="r" values="4;6;4" dur="1.5s" repeatCount="indefinite"/></circle>
-          <!-- X-axis -->
-          <line x1="20" y1="200" x2="180" y2="200" stroke="rgba(0,229,255,0.2)" stroke-width="0.8"/>
         </svg>
       </div>
       <div class="cat-bg-overlay"></div>
-      <div class="category-bg-text">SEO<span class="line2">GROWTH</span></div>
+      <div class="category-bg-text">SEO GROWTH</div>
       <div class="category-logo">✦ Nexvora ✦</div>
       <span class="cat-badge">HOT</span>
       <div class="category-svc-icon">
         <svg viewBox="0 0 110 110" xmlns="http://www.w3.org/2000/svg">
           <circle cx="55" cy="55" r="50" fill="rgba(0,229,255,0.06)" stroke="rgba(0,229,255,0.25)" stroke-width="1"/>
-          <!-- Magnifier -->
           <circle cx="48" cy="46" r="18" fill="none" stroke="#00e5ff" stroke-width="2"/>
           <line x1="61" y1="59" x2="76" y2="74" stroke="#00e5ff" stroke-width="2.5" stroke-linecap="round"/>
-          <!-- Graph inside magnifier -->
           <polyline points="36,50 42,44 48,47 54,39" fill="none" stroke="rgba(255,45,120,0.8)" stroke-width="1.5"/>
           <circle cx="54" cy="39" r="2.5" fill="#ff2d78"/>
         </svg>
@@ -971,7 +975,6 @@ footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,
       <div class="category-name">SEO & GROWTH</div>
       <div class="category-link">→ EXPLORE SERVICE</div>
     </div>
-
   </div>
 </section>
 
@@ -1041,7 +1044,7 @@ footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,
   </div>
   <div class="menu-panel" id="tab-desserts">
     <div class="menu-column">
-      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Cloud Migration</div><div class="menu-item-price">$3,500</div></div><div class="menu-item-desc">Move your existing infrastructure to AWS, GCP, or Azure with zero downtime.</div></div>
+      <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">Cloud Migration</div><div class="menu-item-price">$3,500</div></div><div class="menu-item-desc">Move existing infrastructure to AWS, GCP, or Azure with zero downtime.</div></div>
       <div class="menu-item"><div class="menu-item-header"><div class="menu-item-name">DevOps Setup</div><div class="menu-item-price">$2,800</div></div><div class="menu-item-desc">CI/CD pipelines, Docker, Kubernetes, automated testing, deployment workflows.</div></div>
     </div>
     <div class="menu-column">
@@ -1077,7 +1080,7 @@ footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,
   </div>
   <div class="reviews-carousel-wrap reveal">
     <div class="reviews-track" id="reviewsTrack">
-      <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Absolutely the finest digital agency we've worked with. Our new web app launched ahead of schedule and our conversion rate doubled within the first month. Extraordinary team."</p><div class="review-author"><div class="review-avatar">A</div><div><div class="review-name">Alexandra Monroe</div><div class="review-role">CEO, Veritas Ventures</div></div></div></div>
+      <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"Absolutely the finest digital agency we've worked with. Our new web app launched ahead of schedule and our conversion rate doubled within the first month."</p><div class="review-author"><div class="review-avatar">A</div><div><div class="review-name">Alexandra Monroe</div><div class="review-role">CEO, Veritas Ventures</div></div></div></div>
       <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"The attention to detail in our mobile app is unmatched. Nexvora delivered a product that our investors called 'best-in-class UX.' The support post-launch has been impeccable."</p><div class="review-author"><div class="review-avatar">J</div><div><div class="review-name">James Whitmore</div><div class="review-role">Founder, NovaTech Labs</div></div></div></div>
       <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"From the discovery call to the final handoff, every step was seamless. Our redesigned platform saw a 180% spike in user engagement. I recommend Nexvora without hesitation."</p><div class="review-author"><div class="review-avatar">S</div><div><div class="review-name">Sophia Bellaforte</div><div class="review-role">Product Director, Orbis</div></div></div></div>
       <div class="review-card"><div class="review-stars">★★★★★</div><p class="review-text">"The SEO and digital strategy team at Nexvora took us from page 4 to page 1 on Google in three months. The results speak for themselves — organic traffic tripled."</p><div class="review-author"><div class="review-avatar">M</div><div><div class="review-name">Marco di Napoli</div><div class="review-role">Marketing Head, Solaris Group</div></div></div></div>
@@ -1105,201 +1108,89 @@ footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,
     <button class="gf-btn" data-filter="ambiance">Branding</button>
   </div>
   <div class="gallery-masonry reveal">
-
-    <!-- Portfolio item 1: E-Commerce Platform (wide) -->
     <div class="gallery-item" data-cat="pizza" data-caption="Veritas — E-Commerce Platform Redesign">
       <svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
         <rect width="600" height="260" fill="#050c1a"/>
         <defs><pattern id="g1" width="30" height="30" patternUnits="userSpaceOnUse"><path d="M30 0L0 0 0 30" fill="none" stroke="rgba(0,229,255,0.05)" stroke-width="0.5"/></pattern></defs>
         <rect width="600" height="260" fill="url(#g1)"/>
-        <!-- Browser chrome -->
         <rect x="20" y="20" width="560" height="220" rx="4" fill="rgba(8,20,40,0.9)" stroke="rgba(0,229,255,0.15)" stroke-width="1"/>
         <rect x="20" y="20" width="560" height="28" fill="rgba(0,229,255,0.07)"/>
         <circle cx="38" cy="34" r="4" fill="rgba(255,45,120,0.5)"/>
         <circle cx="50" cy="34" r="4" fill="rgba(240,192,96,0.4)"/>
         <circle cx="62" cy="34" r="4" fill="rgba(0,229,255,0.4)"/>
-        <rect x="75" y="28" width="220" height="12" rx="2" fill="rgba(0,229,255,0.08)" stroke="rgba(0,229,255,0.12)" stroke-width="0.5"/>
-        <!-- Nav bar on site -->
-        <rect x="20" y="48" width="560" height="22" fill="rgba(0,229,255,0.04)" stroke="none"/>
-        <rect x="30" y="53" width="60" height="10" rx="1" fill="rgba(0,229,255,0.2)"/>
-        <rect x="280" y="54" width="35" height="8" rx="1" fill="rgba(200,220,240,0.1)"/>
-        <rect x="325" y="54" width="35" height="8" rx="1" fill="rgba(200,220,240,0.1)"/>
-        <rect x="370" y="54" width="35" height="8" rx="1" fill="rgba(200,220,240,0.1)"/>
-        <rect x="520" y="53" width="50" height="10" rx="2" fill="rgba(255,45,120,0.5)"/>
-        <!-- Product grid -->
         <rect x="30" y="82" width="130" height="130" rx="3" fill="rgba(0,229,255,0.06)" stroke="rgba(0,229,255,0.12)" stroke-width="0.8"/>
         <rect x="170" y="82" width="130" height="130" rx="3" fill="rgba(255,45,120,0.06)" stroke="rgba(255,45,120,0.12)" stroke-width="0.8"/>
         <rect x="310" y="82" width="130" height="130" rx="3" fill="rgba(240,192,96,0.05)" stroke="rgba(240,192,96,0.12)" stroke-width="0.8"/>
         <rect x="450" y="82" width="120" height="130" rx="3" fill="rgba(0,229,255,0.04)" stroke="rgba(0,229,255,0.1)" stroke-width="0.8"/>
-        <!-- Product previews inside cards -->
         <ellipse cx="95" cy="130" rx="35" ry="30" fill="rgba(0,229,255,0.12)"/>
         <ellipse cx="235" cy="130" rx="35" ry="30" fill="rgba(255,45,120,0.1)"/>
         <ellipse cx="375" cy="130" rx="35" ry="30" fill="rgba(240,192,96,0.1)"/>
-        <ellipse cx="510" cy="130" rx="30" ry="28" fill="rgba(0,229,255,0.08)"/>
-        <!-- Card labels -->
-        <rect x="35" y="196" width="80" height="6" rx="1" fill="rgba(0,229,255,0.3)"/>
-        <rect x="35" y="206" width="50" height="5" rx="1" fill="rgba(0,229,255,0.15)"/>
-        <rect x="175" y="196" width="80" height="6" rx="1" fill="rgba(255,45,120,0.3)"/>
-        <rect x="175" y="206" width="50" height="5" rx="1" fill="rgba(255,45,120,0.15)"/>
-        <rect x="315" y="196" width="80" height="6" rx="1" fill="rgba(240,192,96,0.3)"/>
-        <rect x="315" y="206" width="50" height="5" rx="1" fill="rgba(240,192,96,0.15)"/>
-        <rect x="455" y="196" width="70" height="6" rx="1" fill="rgba(0,229,255,0.25)"/>
       </svg>
       <div class="gallery-overlay"><div class="gallery-overlay-title">E-Commerce Platform</div><div class="gallery-overlay-sub">Click to enlarge</div></div>
       <div class="gallery-zoom-icon">🔍</div>
     </div>
-
-    <!-- Portfolio item 2: Mobile App -->
     <div class="gallery-item" data-cat="mains" data-caption="NovaTech — iOS & Android App">
       <svg viewBox="0 0 280 260" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
         <rect width="280" height="260" fill="#0a0316"/>
-        <rect width="280" height="260" fill="url(#g1)"/>
-        <!-- Phone mockup -->
         <rect x="80" y="20" width="120" height="220" rx="14" fill="rgba(10,3,22,0.95)" stroke="#ff2d78" stroke-width="1.5"/>
         <rect x="93" y="40" width="94" height="165" rx="4" fill="rgba(255,45,120,0.05)"/>
-        <!-- App header -->
         <rect x="93" y="40" width="94" height="24" fill="rgba(255,45,120,0.1)"/>
-        <rect x="100" y="47" width="30" height="8" rx="1" fill="rgba(255,45,120,0.5)"/>
-        <circle cx="174" cy="51" r="6" fill="none" stroke="rgba(255,45,120,0.4)" stroke-width="1"/>
-        <!-- App content cards -->
         <rect x="98" y="70" width="84" height="36" rx="3" fill="rgba(255,45,120,0.08)" stroke="rgba(255,45,120,0.2)" stroke-width="0.8"/>
         <rect x="98" y="112" width="38" height="38" rx="3" fill="rgba(0,229,255,0.08)" stroke="rgba(0,229,255,0.2)" stroke-width="0.8"/>
         <rect x="142" y="112" width="40" height="38" rx="3" fill="rgba(240,192,96,0.08)" stroke="rgba(240,192,96,0.15)" stroke-width="0.8"/>
-        <rect x="98" y="156" width="84" height="24" rx="3" fill="rgba(255,45,120,0.05)" stroke="rgba(255,45,120,0.15)" stroke-width="0.8"/>
-        <!-- Notch -->
         <rect x="122" y="23" width="36" height="8" rx="4" fill="#0a0316"/>
-        <circle cx="164" cy="27" r="3" fill="rgba(255,45,120,0.3)"/>
-        <!-- Home indicator -->
         <rect x="122" y="230" width="36" height="3" rx="1.5" fill="rgba(255,45,120,0.4)"/>
-        <!-- Floating elements -->
-        <circle cx="40" cy="60" r="20" fill="none" stroke="rgba(255,45,120,0.1)" stroke-width="1"/>
-        <circle cx="240" cy="190" r="30" fill="none" stroke="rgba(0,229,255,0.08)" stroke-width="1"/>
       </svg>
       <div class="gallery-overlay"><div class="gallery-overlay-title">Mobile App Launch</div><div class="gallery-overlay-sub">Click to enlarge</div></div>
       <div class="gallery-zoom-icon">🔍</div>
     </div>
-
-    <!-- Portfolio item 3: SaaS Dashboard -->
     <div class="gallery-item" data-cat="pizza" data-caption="Orbis — SaaS Dashboard UI">
       <svg viewBox="0 0 280 260" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
         <rect width="280" height="260" fill="#030810"/>
-        <rect width="280" height="260" fill="url(#g1)"/>
-        <!-- Dashboard layout -->
-        <rect x="0" y="0" width="60" height="260" fill="rgba(0,229,255,0.04)" stroke="none"/>
+        <rect x="0" y="0" width="60" height="260" fill="rgba(0,229,255,0.04)"/>
         <rect x="60" y="0" width="220" height="40" fill="rgba(0,229,255,0.04)"/>
-        <!-- Sidebar icons -->
-        <rect x="18" y="18" width="24" height="6" rx="1" fill="rgba(0,229,255,0.4)"/>
-        <circle cx="30" cy="55" r="8" fill="none" stroke="rgba(0,229,255,0.3)" stroke-width="1"/>
-        <circle cx="30" cy="80" r="8" fill="none" stroke="rgba(0,229,255,0.15)" stroke-width="1"/>
-        <circle cx="30" cy="105" r="8" fill="none" stroke="rgba(0,229,255,0.15)" stroke-width="1"/>
-        <circle cx="30" cy="130" r="8" fill="none" stroke="rgba(0,229,255,0.15)" stroke-width="1"/>
-        <!-- KPI cards -->
         <rect x="70" y="50" width="58" height="46" rx="2" fill="rgba(0,229,255,0.05)" stroke="rgba(0,229,255,0.15)" stroke-width="0.8"/>
         <rect x="136" y="50" width="58" height="46" rx="2" fill="rgba(255,45,120,0.05)" stroke="rgba(255,45,120,0.12)" stroke-width="0.8"/>
         <rect x="202" y="50" width="68" height="46" rx="2" fill="rgba(240,192,96,0.04)" stroke="rgba(240,192,96,0.12)" stroke-width="0.8"/>
-        <!-- KPI numbers -->
-        <rect x="78" y="62" width="28" height="12" rx="1" fill="rgba(0,229,255,0.3)"/>
-        <rect x="78" y="78" width="40" height="6" rx="1" fill="rgba(0,229,255,0.15)"/>
-        <rect x="144" y="62" width="28" height="12" rx="1" fill="rgba(255,45,120,0.3)"/>
-        <rect x="144" y="78" width="40" height="6" rx="1" fill="rgba(255,45,120,0.15)"/>
-        <rect x="210" y="62" width="28" height="12" rx="1" fill="rgba(240,192,96,0.3)"/>
-        <rect x="210" y="78" width="40" height="6" rx="1" fill="rgba(240,192,96,0.15)"/>
-        <!-- Chart area -->
         <rect x="70" y="106" width="140" height="100" rx="2" fill="rgba(0,229,255,0.03)" stroke="rgba(0,229,255,0.1)" stroke-width="0.8"/>
         <polyline points="80,176 100,160 120,148 140,140 160,125 180,115 200,108" fill="none" stroke="#00e5ff" stroke-width="1.5"/>
         <polyline points="80,180 100,172 120,168 140,162 160,152 180,146 200,140" fill="none" stroke="rgba(255,45,120,0.5)" stroke-width="1" stroke-dasharray="3 2"/>
-        <!-- Right mini panel -->
-        <rect x="220" y="106" width="50" height="100" rx="2" fill="rgba(255,45,120,0.03)" stroke="rgba(255,45,120,0.1)" stroke-width="0.8"/>
-        <rect x="226" y="116" width="38" height="6" rx="1" fill="rgba(255,45,120,0.25)"/>
-        <rect x="226" y="126" width="30" height="4" rx="1" fill="rgba(255,45,120,0.12)"/>
-        <rect x="226" y="134" width="35" height="4" rx="1" fill="rgba(255,45,120,0.12)"/>
-        <circle cx="245" cy="168" r="18" fill="none" stroke="rgba(255,45,120,0.2)" stroke-width="1"/>
-        <path d="M 245,150 A 18,18 0 0,1 263,168" fill="none" stroke="#ff2d78" stroke-width="2"/>
-        <!-- Table at bottom -->
-        <rect x="70" y="214" width="200" height="36" rx="2" fill="rgba(0,229,255,0.02)" stroke="rgba(0,229,255,0.08)" stroke-width="0.8"/>
-        <rect x="70" y="214" width="200" height="12" fill="rgba(0,229,255,0.04)"/>
-        <rect x="78" y="217" width="30" height="5" rx="1" fill="rgba(0,229,255,0.2)"/>
-        <rect x="138" y="217" width="30" height="5" rx="1" fill="rgba(0,229,255,0.15)"/>
-        <rect x="218" y="217" width="30" height="5" rx="1" fill="rgba(0,229,255,0.15)"/>
       </svg>
       <div class="gallery-overlay"><div class="gallery-overlay-title">SaaS Dashboard</div><div class="gallery-overlay-sub">Click to enlarge</div></div>
       <div class="gallery-zoom-icon">🔍</div>
     </div>
-
-    <!-- Portfolio item 4: Brand Identity -->
     <div class="gallery-item" data-cat="ambiance" data-caption="Solaris — Full Brand Identity">
       <svg viewBox="0 0 280 260" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
         <rect width="280" height="260" fill="#0a0316"/>
-        <rect width="280" height="260" fill="url(#g1)"/>
-        <!-- Logo mark mockup -->
         <polygon points="140,30 170,70 200,70 180,100 190,140 140,115 90,140 100,100 80,70 110,70" fill="none" stroke="rgba(240,192,96,0.6)" stroke-width="1.5"/>
-        <polygon points="140,45 162,72 188,72 171,94 179,124 140,103 101,124 109,94 92,72 118,72" fill="rgba(240,192,96,0.05)"/>
         <circle cx="140" cy="82" r="16" fill="rgba(240,192,96,0.12)" stroke="rgba(240,192,96,0.4)" stroke-width="1"/>
         <circle cx="140" cy="82" r="8" fill="rgba(240,192,96,0.3)"/>
-        <!-- Brand colors palette -->
         <rect x="40" y="160" width="32" height="32" rx="3" fill="#00e5ff" opacity="0.85"/>
         <rect x="80" y="160" width="32" height="32" rx="3" fill="#ff2d78" opacity="0.85"/>
         <rect x="120" y="160" width="32" height="32" rx="3" fill="#f0c060" opacity="0.85"/>
         <rect x="160" y="160" width="32" height="32" rx="3" fill="rgba(140,60,255,0.7)"/>
-        <rect x="200" y="160" width="32" height="32" rx="3" fill="rgba(3,8,16,0.9)" stroke="rgba(0,229,255,0.3)" stroke-width="0.8"/>
-        <!-- Typography lines -->
         <rect x="40" y="205" width="100" height="10" rx="1" fill="rgba(255,255,255,0.15)"/>
         <rect x="40" y="220" width="160" height="6" rx="1" fill="rgba(255,255,255,0.08)"/>
-        <rect x="40" y="232" width="120" height="6" rx="1" fill="rgba(255,255,255,0.06)"/>
-        <!-- Decorative lines -->
-        <line x1="40" y1="152" x2="240" y2="152" stroke="rgba(240,192,96,0.2)" stroke-width="0.8"/>
       </svg>
       <div class="gallery-overlay"><div class="gallery-overlay-title">Brand Identity</div><div class="gallery-overlay-sub">Click to enlarge</div></div>
       <div class="gallery-zoom-icon">🔍</div>
     </div>
-
-    <!-- Portfolio item 5: Fintech App -->
     <div class="gallery-item" data-cat="mains" data-caption="Luma Finance — React Native App">
       <svg viewBox="0 0 280 260" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%">
         <rect width="280" height="260" fill="#030810"/>
-        <rect width="280" height="260" fill="url(#g1)"/>
-        <!-- Fintech dashboard phone -->
         <rect x="70" y="15" width="140" height="230" rx="14" fill="rgba(3,8,16,0.95)" stroke="rgba(0,229,255,0.2)" stroke-width="1.2"/>
-        <rect x="82" y="35" width="116" height="185" rx="4" fill="rgba(0,229,255,0.03)"/>
-        <!-- Balance card -->
         <rect x="88" y="42" width="104" height="58" rx="4" fill="rgba(0,229,255,0.1)" stroke="rgba(0,229,255,0.2)" stroke-width="0.8"/>
-        <rect x="96" y="50" width="50" height="7" rx="1" fill="rgba(0,229,255,0.2)"/>
         <rect x="96" y="62" width="72" height="14" rx="1" fill="rgba(0,229,255,0.5)"/>
-        <rect x="96" y="82" width="40" height="6" rx="1" fill="rgba(0,229,255,0.15)"/>
-        <circle cx="176" cy="66" r="14" fill="none" stroke="rgba(0,229,255,0.2)" stroke-width="1"/>
-        <path d="M 176,52 A 14,14 0 0,1 190,66" fill="none" stroke="#00e5ff" stroke-width="1.5"/>
-        <!-- Transaction list -->
         <rect x="88" y="108" width="104" height="22" rx="2" fill="rgba(0,229,255,0.04)" stroke="rgba(0,229,255,0.1)" stroke-width="0.5"/>
-        <circle cx="100" cy="119" r="6" fill="rgba(0,229,255,0.15)"/>
-        <rect x="112" y="114" width="44" height="5" rx="1" fill="rgba(0,229,255,0.2)"/>
-        <rect x="112" y="122" width="30" height="4" rx="1" fill="rgba(0,229,255,0.1)"/>
-        <rect x="166" y="116" width="20" height="7" rx="1" fill="rgba(0,255,136,0.4)"/>
         <rect x="88" y="136" width="104" height="22" rx="2" fill="rgba(255,45,120,0.03)" stroke="rgba(255,45,120,0.1)" stroke-width="0.5"/>
-        <circle cx="100" cy="147" r="6" fill="rgba(255,45,120,0.15)"/>
-        <rect x="112" y="142" width="44" height="5" rx="1" fill="rgba(255,45,120,0.2)"/>
-        <rect x="112" y="150" width="30" height="4" rx="1" fill="rgba(255,45,120,0.1)"/>
-        <rect x="166" y="144" width="20" height="7" rx="1" fill="rgba(255,45,120,0.4)"/>
-        <rect x="88" y="164" width="104" height="22" rx="2" fill="rgba(240,192,96,0.03)" stroke="rgba(240,192,96,0.1)" stroke-width="0.5"/>
-        <circle cx="100" cy="175" r="6" fill="rgba(240,192,96,0.15)"/>
-        <rect x="112" y="170" width="44" height="5" rx="1" fill="rgba(240,192,96,0.2)"/>
-        <rect x="112" y="178" width="30" height="4" rx="1" fill="rgba(240,192,96,0.1)"/>
-        <rect x="166" y="172" width="20" height="7" rx="1" fill="rgba(240,192,96,0.4)"/>
-        <!-- Bottom nav -->
-        <rect x="82" y="196" width="116" height="20" fill="rgba(0,229,255,0.04)"/>
-        <circle cx="110" cy="206" r="5" fill="none" stroke="rgba(0,229,255,0.4)" stroke-width="1"/>
-        <circle cx="140" cy="206" r="5" fill="rgba(0,229,255,0.4)"/>
-        <circle cx="170" cy="206" r="5" fill="none" stroke="rgba(0,229,255,0.2)" stroke-width="1"/>
-        <!-- Notch -->
         <rect x="118" y="19" width="44" height="7" rx="3.5" fill="rgba(3,8,16,0.9)"/>
       </svg>
       <div class="gallery-overlay"><div class="gallery-overlay-title">Fintech App</div><div class="gallery-overlay-sub">Click to enlarge</div></div>
       <div class="gallery-zoom-icon">🔍</div>
     </div>
-
   </div>
 </section>
 
-<!-- Lightbox (SVG based) -->
 <div id="lightbox">
   <button class="lb-close" id="lbClose">✕</button>
   <button class="lb-nav lb-prev" id="lbPrev">←</button>
@@ -1345,10 +1236,7 @@ footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,
     <div class="footer-brand">
       <a href="#" class="logo" style="margin-bottom:16px;display:inline-flex">
         <div class="logo-mark" style="width:32px;height:32px;flex-shrink:0">
-          <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <polygon points="18,2 34,10 34,26 18,34 2,26 2,10" fill="none" stroke="#00e5ff" stroke-width="1.5"/>
-            <circle cx="18" cy="18" r="4" fill="#00e5ff" opacity="0.9"/>
-          </svg>
+          <svg viewBox="0 0 36 36" fill="none"><polygon points="18,2 34,10 34,26 18,34 2,26 2,10" fill="none" stroke="#00e5ff" stroke-width="1.5"/><circle cx="18" cy="18" r="4" fill="#00e5ff" opacity="0.9"/></svg>
         </div>
         NEX<span style="color:rgba(232,244,255,0.5)">VORA</span>
       </a>
@@ -1394,21 +1282,355 @@ footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,
   </div>
 </footer>
 
-<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+<!-- ════════ THREE.JS ════════ -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.165.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.165.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+
+/* ══ SCENE SETUP ══ */
+const canvas = document.getElementById('hero-canvas');
+const renderer = new THREE.WebGLRenderer({
+  canvas, antialias: true, alpha: true,
+  powerPreference: 'high-performance'
+});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(0, 0, 18);
+
+const clock = new THREE.Clock();
+let mouseX = 0, mouseY = 0, targetMouseX = 0, targetMouseY = 0;
+let scrollY = 0;
+
+/* ══ MOUSE PARALLAX ══ */
+document.addEventListener('mousemove', e => {
+  targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+  targetMouseY = -(e.clientY / window.innerHeight - 0.5) * 2;
+});
+window.addEventListener('scroll', () => { scrollY = window.scrollY; });
+
+/* ══ LIGHTS ══ */
+const ambientLight = new THREE.AmbientLight(0x0a1a2a, 3);
+scene.add(ambientLight);
+
+const cyanLight = new THREE.PointLight(0x00e5ff, 80, 60);
+cyanLight.position.set(8, 6, 10);
+scene.add(cyanLight);
+
+const magentaLight = new THREE.PointLight(0xff2d78, 60, 50);
+magentaLight.position.set(-8, -4, 8);
+scene.add(magentaLight);
+
+const goldLight = new THREE.PointLight(0xf0c060, 30, 40);
+goldLight.position.set(0, 10, -5);
+scene.add(goldLight);
+
+const rimLight = new THREE.DirectionalLight(0x00e5ff, 2);
+rimLight.position.set(-10, 5, -5);
+scene.add(rimLight);
+
+/* ══ CENTRAL 3D OBJECT — Geometric Crystal ══ */
+const crystalGroup = new THREE.Group();
+scene.add(crystalGroup);
+
+// Main icosahedron
+const icoGeo = new THREE.IcosahedronGeometry(3.2, 1);
+const icoMat = new THREE.MeshPhysicalMaterial({
+  color: 0x001a2a,
+  emissive: 0x00e5ff,
+  emissiveIntensity: 0.06,
+  metalness: 0.95,
+  roughness: 0.05,
+  transparent: true,
+  opacity: 0.85,
+  wireframe: false,
+  side: THREE.DoubleSide,
+  envMapIntensity: 1,
+});
+const icoMesh = new THREE.Mesh(icoGeo, icoMat);
+crystalGroup.add(icoMesh);
+
+// Wireframe overlay
+const wireMat = new THREE.MeshBasicMaterial({
+  color: 0x00e5ff, wireframe: true,
+  transparent: true, opacity: 0.15
+});
+const wireMesh = new THREE.Mesh(icoGeo.clone(), wireMat);
+wireMesh.scale.setScalar(1.02);
+crystalGroup.add(wireMesh);
+
+// Inner glowing core
+const coreGeo = new THREE.OctahedronGeometry(1.6, 0);
+const coreMat = new THREE.MeshPhysicalMaterial({
+  color: 0x00e5ff,
+  emissive: 0x00e5ff,
+  emissiveIntensity: 0.8,
+  metalness: 0.3,
+  roughness: 0.1,
+  transparent: true,
+  opacity: 0.6,
+});
+const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+crystalGroup.add(coreMesh);
+
+// Magenta inner shard
+const shardGeo = new THREE.TetrahedronGeometry(1.0, 0);
+const shardMat = new THREE.MeshPhysicalMaterial({
+  color: 0xff2d78, emissive: 0xff2d78,
+  emissiveIntensity: 0.6,
+  metalness: 0.5, roughness: 0.2,
+  transparent: true, opacity: 0.7
+});
+const shardMesh = new THREE.Mesh(shardGeo, shardMat);
+shardMesh.rotation.set(1, 0.5, 0.3);
+crystalGroup.add(shardMesh);
+
+// Outer ring 1
+const ring1Geo = new THREE.TorusGeometry(5.2, 0.04, 8, 80);
+const ring1Mat = new THREE.MeshBasicMaterial({ color: 0x00e5ff, transparent: true, opacity: 0.3 });
+const ring1 = new THREE.Mesh(ring1Geo, ring1Mat);
+ring1.rotation.x = Math.PI / 2;
+crystalGroup.add(ring1);
+
+// Outer ring 2 (tilted)
+const ring2Geo = new THREE.TorusGeometry(6.5, 0.025, 8, 100);
+const ring2Mat = new THREE.MeshBasicMaterial({ color: 0xff2d78, transparent: true, opacity: 0.2 });
+const ring2 = new THREE.Mesh(ring2Geo, ring2Mat);
+ring2.rotation.x = Math.PI / 3;
+ring2.rotation.y = Math.PI / 6;
+crystalGroup.add(ring2);
+
+// Outer ring 3
+const ring3Geo = new THREE.TorusGeometry(7.8, 0.02, 8, 120);
+const ring3Mat = new THREE.MeshBasicMaterial({ color: 0xf0c060, transparent: true, opacity: 0.12 });
+const ring3 = new THREE.Mesh(ring3Geo, ring3Mat);
+ring3.rotation.x = Math.PI / 4;
+ring3.rotation.z = Math.PI / 5;
+crystalGroup.add(ring3);
+
+// Position right side
+crystalGroup.position.set(5, 0, 0);
+
+/* ══ FLOATING PARTICLES ══ */
+const particleCount = 800;
+const particleGeo = new THREE.BufferGeometry();
+const positions = new Float32Array(particleCount * 3);
+const pColors = new Float32Array(particleCount * 3);
+const pSizes = new Float32Array(particleCount);
+
+for (let i = 0; i < particleCount; i++) {
+  const i3 = i * 3;
+  positions[i3]     = (Math.random() - 0.5) * 60;
+  positions[i3 + 1] = (Math.random() - 0.5) * 40;
+  positions[i3 + 2] = (Math.random() - 0.5) * 30;
+
+  const col = Math.random();
+  if (col < 0.5) {
+    pColors[i3] = 0; pColors[i3+1] = 0.9; pColors[i3+2] = 1;     // cyan
+  } else if (col < 0.75) {
+    pColors[i3] = 1; pColors[i3+1] = 0.18; pColors[i3+2] = 0.47; // magenta
+  } else {
+    pColors[i3] = 0.94; pColors[i3+1] = 0.75; pColors[i3+2] = 0.38; // gold
+  }
+  pSizes[i] = Math.random() * 2.5 + 0.5;
+}
+
+particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+particleGeo.setAttribute('color', new THREE.BufferAttribute(pColors, 3));
+particleGeo.setAttribute('size', new THREE.BufferAttribute(pSizes, 1));
+
+const particleMat = new THREE.PointsMaterial({
+  size: 0.12,
+  vertexColors: true,
+  transparent: true,
+  opacity: 0.7,
+  blending: THREE.AdditiveBlending,
+  depthWrite: false,
+});
+const particles = new THREE.Points(particleGeo, particleMat);
+scene.add(particles);
+
+/* ══ GRID PLANE ══ */
+const gridHelper = new THREE.GridHelper(80, 40, 0x00e5ff, 0x00e5ff);
+gridHelper.material.transparent = true;
+gridHelper.material.opacity = 0.04;
+gridHelper.position.y = -12;
+scene.add(gridHelper);
+
+/* ══ ORBITING NODES ══ */
+const nodes = [];
+const nodeCount = 6;
+const nodeGeo = new THREE.OctahedronGeometry(0.2, 0);
+for (let i = 0; i < nodeCount; i++) {
+  const nodeMat = new THREE.MeshBasicMaterial({
+    color: i % 2 === 0 ? 0x00e5ff : 0xff2d78,
+    transparent: true, opacity: 0.9
+  });
+  const nodeMesh = new THREE.Mesh(nodeGeo, nodeMat);
+  const angle = (i / nodeCount) * Math.PI * 2;
+  const radius = 4.5 + Math.random() * 1.5;
+  nodeMesh.userData = { angle, radius, speed: 0.3 + Math.random() * 0.3, orbitY: (Math.random() - 0.5) * 2 };
+  crystalGroup.add(nodeMesh);
+  nodes.push(nodeMesh);
+
+  // connecting line from center to node
+  const lineGeo = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(0, 0, 0),
+    new THREE.Vector3(Math.cos(angle) * radius, nodeMesh.userData.orbitY, Math.sin(angle) * radius)
+  ]);
+  const lineMat = new THREE.LineBasicMaterial({ color: i % 2 === 0 ? 0x00e5ff : 0xff2d78, transparent: true, opacity: 0.15 });
+  const line = new THREE.Line(lineGeo, lineMat);
+  crystalGroup.add(line);
+}
+
+/* ══ SCROLL-BASED DATA HEX SHARDS ══ */
+const hexGroup = new THREE.Group();
+scene.add(hexGroup);
+const hexPositions = [
+  [-12, 4, -5], [14, -3, -8], [-8, -6, -3],
+  [16, 6, -6], [-14, -2, -10]
+];
+hexPositions.forEach(([x, y, z], i) => {
+  const hGeo = new THREE.CylinderGeometry(0.6, 0.6, 0.15, 6);
+  const hMat = new THREE.MeshPhysicalMaterial({
+    color: i % 2 === 0 ? 0x00e5ff : 0xff2d78,
+    emissive: i % 2 === 0 ? 0x00e5ff : 0xff2d78,
+    emissiveIntensity: 0.3,
+    metalness: 0.8, roughness: 0.2,
+    transparent: true, opacity: 0.6
+  });
+  const hMesh = new THREE.Mesh(hGeo, hMat);
+  hMesh.position.set(x, y, z);
+  hMesh.userData = { baseY: y, phase: i * 1.2 };
+  hexGroup.add(hMesh);
+});
+
+/* ══ ANIMATE ══ */
+function animate() {
+  requestAnimationFrame(animate);
+  const t = clock.getElapsedTime();
+
+  // Smooth mouse follow
+  mouseX += (targetMouseX - mouseX) * 0.04;
+  mouseY += (targetMouseY - mouseY) * 0.04;
+
+  // Camera parallax based on mouse + scroll
+  camera.position.x = mouseX * 1.5;
+  camera.position.y = mouseY * 1.0 - scrollY * 0.003;
+  camera.lookAt(new THREE.Vector3(3, 0, 0));
+
+  // Crystal rotation — cinematic slow drift
+  crystalGroup.rotation.y = t * 0.12 + mouseX * 0.3;
+  crystalGroup.rotation.x = Math.sin(t * 0.08) * 0.15 + mouseY * 0.15;
+
+  // Inner core counter-spin
+  coreMesh.rotation.y = -t * 0.4;
+  coreMesh.rotation.x = t * 0.3;
+  shardMesh.rotation.y = t * 0.6;
+  shardMesh.rotation.z = t * 0.4;
+
+  // Core emissive pulse
+  coreMat.emissiveIntensity = 0.6 + Math.sin(t * 2) * 0.3;
+  shardMat.emissiveIntensity = 0.5 + Math.cos(t * 2.5) * 0.3;
+
+  // Rings rotate at different speeds/axes
+  ring1.rotation.z = t * 0.2;
+  ring2.rotation.z = -t * 0.15;
+  ring2.rotation.x = Math.PI / 3 + t * 0.08;
+  ring3.rotation.z = t * 0.1;
+  ring3.rotation.y = t * 0.06;
+
+  // Light animation — cinematic color shifting
+  cyanLight.position.x = 8 + Math.sin(t * 0.5) * 3;
+  cyanLight.position.y = 6 + Math.cos(t * 0.4) * 2;
+  magentaLight.position.x = -8 + Math.cos(t * 0.6) * 3;
+  magentaLight.position.y = -4 + Math.sin(t * 0.5) * 2;
+  cyanLight.intensity = 70 + Math.sin(t * 1.5) * 20;
+  magentaLight.intensity = 55 + Math.cos(t * 1.8) * 15;
+
+  // Orbiting nodes
+  nodes.forEach((node) => {
+    const { angle, radius, speed, orbitY } = node.userData;
+    const a = angle + t * speed;
+    node.position.set(Math.cos(a) * radius, orbitY + Math.sin(t * 0.5 + angle) * 0.5, Math.sin(a) * radius);
+  });
+
+  // Floating hex shards
+  hexGroup.children.forEach(h => {
+    h.position.y = h.userData.baseY + Math.sin(t * 0.6 + h.userData.phase) * 0.4;
+    h.rotation.y = t * 0.3 + h.userData.phase;
+  });
+
+  // Particles slow drift
+  particles.rotation.y = t * 0.01;
+  particles.rotation.x = Math.sin(t * 0.005) * 0.02;
+
+  renderer.render(scene, camera);
+}
+
+animate();
+
+/* ══ RESIZE ══ */
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
+</script>
 
 <script>
-/* LOADER */
+/* ══ CUSTOM CURSOR ══ */
+const cursor = document.getElementById('cursor');
+const cursorTrail = document.getElementById('cursorTrail');
+let trailX = 0, trailY = 0;
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+});
+function animateCursor() {
+  trailX += (parseFloat(cursor.style.left || 0) - trailX) * 0.12;
+  trailY += (parseFloat(cursor.style.top || 0) - trailY) * 0.12;
+  cursorTrail.style.left = trailX + 'px';
+  cursorTrail.style.top = trailY + 'px';
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+document.querySelectorAll('a,button,.category-card,.gallery-item,.gf-btn,.menu-tab-btn,.carousel-btn,.review-card').forEach(el => {
+  el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); cursorTrail.classList.add('hover'); });
+  el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); cursorTrail.classList.remove('hover'); });
+});
+
+/* ══ LOADER ══ */
 window.addEventListener('load', () => {
   setTimeout(() => {
     const loader = document.getElementById('loader');
     loader.style.opacity = '0';
     setTimeout(() => loader.style.display = 'none', 800);
-  }, 1600);
+  }, 1800);
 });
 
-/* MOBILE DRAWER */
-const hamburger     = document.getElementById('hamburger');
-const mobileDrawer  = document.getElementById('mobileDrawer');
+/* ══ NAV SCROLL ══ */
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+/* ══ MOBILE DRAWER ══ */
+const hamburger = document.getElementById('hamburger');
+const mobileDrawer = document.getElementById('mobileDrawer');
 const drawerOverlay = document.getElementById('drawerOverlay');
 hamburger.addEventListener('click', () => {
   mobileDrawer.classList.add('open');
@@ -1422,13 +1644,55 @@ function closeDrawer() {
 }
 document.getElementById('drawerClose').addEventListener('click', closeDrawer);
 
-/* REVEAL ON SCROLL */
-const revealObs = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.08 });
-document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+/* ══ REVEAL ON SCROLL ══ */
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      // stagger children if present
+      if (e.target.classList.contains('menu-panel') || e.target.classList.contains('gallery-masonry')) return;
+      e.target.querySelectorAll('.menu-item,.review-card').forEach((child, i) => {
+        child.style.transitionDelay = (i * 0.06) + 's';
+      });
+    }
+  });
+}, { threshold: 0.07 });
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el => revealObs.observe(el));
 
-/* MENU TABS */
+/* ══ 3D TILT on deal card ══ */
+const dealCard = document.getElementById('dealCard');
+if (dealCard) {
+  dealCard.parentElement.addEventListener('mousemove', e => {
+    const rect = dealCard.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const rx = (e.clientY - cy) / (rect.height / 2) * 8;
+    const ry = -(e.clientX - cx) / (rect.width / 2) * 8;
+    dealCard.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.02)`;
+    dealCard.style.boxShadow = `${-ry*2}px ${rx*2}px 40px rgba(0,229,255,0.15)`;
+  });
+  dealCard.parentElement.addEventListener('mouseleave', () => {
+    dealCard.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) scale(1)';
+    dealCard.style.boxShadow = '';
+  });
+}
+
+/* ══ CATEGORY 3D TILT ══ */
+document.querySelectorAll('.category-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const rx = (e.clientY - rect.top - rect.height/2) / (rect.height/2) * 10;
+    const ry = -(e.clientX - rect.left - rect.width/2) / (rect.width/2) * 10;
+    card.style.transform = `perspective(600px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.04)`;
+    card.style.zIndex = '5';
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+    card.style.zIndex = '';
+  });
+});
+
+/* ══ MENU TABS ══ */
 document.querySelectorAll('.menu-tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.menu-tab-btn').forEach(b => b.classList.remove('active'));
@@ -1439,13 +1703,13 @@ document.querySelectorAll('.menu-tab-btn').forEach(btn => {
   });
 });
 
-/* REVIEWS CAROUSEL */
+/* ══ REVIEWS CAROUSEL ══ */
 (function() {
   const track = document.getElementById('reviewsTrack');
-  const dots  = document.getElementById('carouselDots');
+  const dots = document.getElementById('carouselDots');
   const cards = track ? track.querySelectorAll('.review-card') : [];
   const total = cards.length;
-  const perPage = 3;
+  const perPage = window.innerWidth < 768 ? 1 : 3;
   const pages = Math.ceil(total / perPage);
   let current = 0, autoTimer;
   if (!track || total === 0) return;
@@ -1468,7 +1732,7 @@ document.querySelectorAll('.menu-tab-btn').forEach(btn => {
   autoTimer = setTimeout(() => goTo(1), 5000);
 })();
 
-/* GALLERY FILTER + LIGHTBOX (SVG-based) */
+/* ══ GALLERY FILTER + LIGHTBOX ══ */
 (function() {
   const items = document.querySelectorAll('.gallery-item');
   const lightbox = document.getElementById('lightbox');
@@ -1501,7 +1765,8 @@ document.querySelectorAll('.menu-tab-btn').forEach(btn => {
     currentIdx = (idx + currentImages.length) % currentImages.length;
     const svgEl = currentImages[currentIdx].querySelector('svg');
     lbContent.innerHTML = svgEl ? svgEl.outerHTML : '';
-    lbContent.querySelector('svg') && (lbContent.querySelector('svg').style.cssText = 'max-width:85vw;max-height:80vh;display:block');
+    const sv = lbContent.querySelector('svg');
+    if (sv) sv.style.cssText = 'max-width:85vw;max-height:80vh;display:block';
     lbCap.textContent = currentImages[currentIdx].dataset.caption;
     lightbox.classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -1519,37 +1784,37 @@ document.querySelectorAll('.menu-tab-btn').forEach(btn => {
   function closeLB() { lightbox.classList.remove('open'); document.body.style.overflow = ''; }
 })();
 
-/* ANIMATED COUNTERS */
+/* ══ COUNTERS ══ */
 (function() {
   const counters = document.querySelectorAll('.stat-number[data-target]');
   let triggered = false;
-  const statsObs = new IntersectionObserver((entries) => {
+  const obs = new IntersectionObserver(entries => {
     if (entries[0].isIntersecting && !triggered) {
       triggered = true;
       counters.forEach(el => {
         const target = +el.dataset.target;
         const suffix = el.dataset.suffix || '';
         const isDecimal = el.dataset.decimal === 'true';
-        const duration = 1800;
+        const duration = 2000;
         const start = performance.now();
         function tick(now) {
-          const progress = Math.min((now - start) / duration, 1);
-          const ease = 1 - Math.pow(1 - progress, 3);
+          const p = Math.min((now - start) / duration, 1);
+          const ease = 1 - Math.pow(1 - p, 3);
           const val = target * ease;
-          if (isDecimal) { el.textContent = (val / 10).toFixed(1) + suffix; }
-          else if (target >= 1000) { el.textContent = Math.round(val / 1000) + (progress === 1 ? suffix : 'K+'); }
-          else { el.textContent = Math.round(val) + (progress === 1 ? suffix : '+'); }
-          if (progress < 1) requestAnimationFrame(tick);
+          if (isDecimal) el.textContent = (val / 10).toFixed(1) + suffix;
+          else if (target >= 1000) el.textContent = Math.round(val / 1000) + (p === 1 ? suffix : 'K+');
+          else el.textContent = Math.round(val) + (p === 1 ? suffix : '+');
+          if (p < 1) requestAnimationFrame(tick);
         }
         requestAnimationFrame(tick);
       });
     }
   }, { threshold: 0.3 });
   const statsEl = document.getElementById('stats');
-  if (statsEl) statsObs.observe(statsEl);
+  if (statsEl) obs.observe(statsEl);
 })();
 
-/* CONTACT FORM */
+/* ══ CONTACT FORM ══ */
 document.querySelector('.res-submit') && document.querySelector('.res-submit').addEventListener('click', function() {
   const inputs = document.querySelectorAll('.res-input');
   let allFilled = true;
