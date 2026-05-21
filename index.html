@@ -1294,6 +1294,262 @@ footer{background:var(--black);padding:80px;border-top:1px solid rgba(0,229,255,
 
 <script type="module">
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+
+/* ════════════════════════════════════
+   ↓↓↓ CHANGE YOUR MODEL PATH HERE ↓↓↓
+   ════════════════════════════════════ */
+const MODEL_PATH = 'car.glb';           // ← your .glb file name / path
+const MODEL_SCALE = 3.0;               // ← adjust size
+const MODEL_POSITION = [2, -1.5, 0];   // ← [x, y, z] position offset
+const MODEL_ROTATION_SPEED = 0.004;    // ← auto-rotation speed (set 0 to disable)
+/* ════════════════════════════════════ */
+
+const canvas = document.getElementById('hero-canvas');
+const renderer = new THREE.WebGLRenderer({
+  canvas, antialias: true, alpha: true,
+  powerPreference: 'high-performance'
+});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.4;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(0, 2, 14);
+
+const clock = new THREE.Clock();
+let mouseX = 0, mouseY = 0, targetMouseX = 0, targetMouseY = 0;
+let scrollY = 0;
+
+document.addEventListener('mousemove', e => {
+  targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+  targetMouseY = -(e.clientY / window.innerHeight - 0.5) * 2;
+});
+window.addEventListener('scroll', () => { scrollY = window.scrollY; });
+
+/* ══ LIGHTS ══ */
+scene.add(new THREE.AmbientLight(0x0a1a2a, 4));
+
+const cyanLight = new THREE.PointLight(0x00e5ff, 80, 60);
+cyanLight.position.set(8, 6, 10);
+scene.add(cyanLight);
+
+const magentaLight = new THREE.PointLight(0xff2d78, 50, 50);
+magentaLight.position.set(-8, -4, 8);
+scene.add(magentaLight);
+
+const goldLight = new THREE.PointLight(0xf0c060, 30, 40);
+goldLight.position.set(0, 10, -5);
+scene.add(goldLight);
+
+const keyLight = new THREE.DirectionalLight(0xffffff, 3);
+keyLight.position.set(5, 8, 8);
+keyLight.castShadow = true;
+scene.add(keyLight);
+
+const rimLight = new THREE.DirectionalLight(0x00e5ff, 2);
+rimLight.position.set(-10, 5, -5);
+scene.add(rimLight);
+
+const fillLight = new THREE.DirectionalLight(0xff2d78, 1);
+fillLight.position.set(-5, -3, 5);
+scene.add(fillLight);
+
+/* ══ GROUND REFLECTION PLANE ══ */
+const planeGeo = new THREE.PlaneGeometry(60, 60);
+const planeMat = new THREE.MeshStandardMaterial({
+  color: 0x000a14,
+  metalness: 0.8,
+  roughness: 0.3,
+  transparent: true,
+  opacity: 0.6,
+});
+const plane = new THREE.Mesh(planeGeo, planeMat);
+plane.rotation.x = -Math.PI / 2;
+plane.position.y = -2.2;
+plane.receiveShadow = true;
+scene.add(plane);
+
+/* ══ GRID ══ */
+const gridHelper = new THREE.GridHelper(60, 30, 0x00e5ff, 0x00e5ff);
+gridHelper.material.transparent = true;
+gridHelper.material.opacity = 0.06;
+gridHelper.position.y = -2.15;
+scene.add(gridHelper);
+
+/* ══ PARTICLES ══ */
+const particleCount = 600;
+const pGeo = new THREE.BufferGeometry();
+const pPos = new Float32Array(particleCount * 3);
+const pCol = new Float32Array(particleCount * 3);
+for (let i = 0; i < particleCount; i++) {
+  const i3 = i * 3;
+  pPos[i3]   = (Math.random() - 0.5) * 60;
+  pPos[i3+1] = (Math.random() - 0.5) * 40;
+  pPos[i3+2] = (Math.random() - 0.5) * 30;
+  const c = Math.random();
+  if (c < 0.5)      { pCol[i3]=0;    pCol[i3+1]=0.9; pCol[i3+2]=1;    }
+  else if (c < 0.75){ pCol[i3]=1;    pCol[i3+1]=0.18;pCol[i3+2]=0.47; }
+  else              { pCol[i3]=0.94; pCol[i3+1]=0.75;pCol[i3+2]=0.38; }
+}
+pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+pGeo.setAttribute('color',    new THREE.BufferAttribute(pCol, 3));
+const pMat = new THREE.PointsMaterial({
+  size: 0.1, vertexColors: true,
+  transparent: true, opacity: 0.65,
+  blending: THREE.AdditiveBlending, depthWrite: false,
+});
+scene.add(new THREE.Points(pGeo, pMat));
+
+/* ══ GLB MODEL LOADER ══ */
+const modelGroup = new THREE.Group();
+modelGroup.position.set(...MODEL_POSITION);
+scene.add(modelGroup);
+
+// Loading indicator overlay
+const loadingDiv = document.createElement('div');
+loadingDiv.id = 'model-loading';
+loadingDiv.style.cssText = `
+  position:absolute; right:5%; top:50%; transform:translateY(-50%);
+  z-index:20; color:rgba(0,229,255,0.7);
+  font-family:'Space Grotesk',sans-serif; font-size:0.65rem;
+  letter-spacing:3px; text-transform:uppercase;
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+`;
+loadingDiv.innerHTML = `
+  <div style="width:40px;height:40px;border:1px solid rgba(0,229,255,0.3);
+    border-top-color:#00e5ff;border-radius:50%;animation:spin360 1s linear infinite;"></div>
+  <span>Loading Model...</span>
+`;
+const styleTag = document.createElement('style');
+styleTag.textContent = '@keyframes spin360{to{transform:rotate(360deg)}}';
+document.head.appendChild(styleTag);
+document.getElementById('hero').appendChild(loadingDiv);
+
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('https://unpkg.com/three@0.165.0/examples/jsm/libs/draco/');
+
+const loader = new GLTFLoader();
+loader.setDRACOLoader(dracoLoader);
+
+loader.load(
+  MODEL_PATH,
+
+  // ── ON LOAD ──
+  (gltf) => {
+    loadingDiv.remove();
+
+    const model = gltf.scene;
+
+    // Auto-center + scale
+    const box = new THREE.Box3().setFromObject(model);
+    const center = box.getCenter(new THREE.Vector3());
+    const size = box.getSize(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const scale = MODEL_SCALE / maxDim;
+
+    model.scale.setScalar(scale);
+    model.position.sub(center.multiplyScalar(scale));
+
+    // Cast shadows + enhance materials
+    model.traverse(child => {
+      if (child.isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+        if (child.material) {
+          const mats = Array.isArray(child.material) ? child.material : [child.material];
+          mats.forEach(mat => {
+            if (mat.isMeshStandardMaterial || mat.isMeshPhysicalMaterial) {
+              mat.envMapIntensity = 1.2;
+            }
+          });
+        }
+      }
+    });
+
+    modelGroup.add(model);
+
+    // Subtle entrance animation
+    modelGroup.scale.setScalar(0);
+    let entered = false;
+    function enterAnim() {
+      if (entered) return;
+      const s = modelGroup.scale.x;
+      if (s < 1) {
+        const ns = Math.min(s + 0.025, 1);
+        modelGroup.scale.setScalar(ns);
+        requestAnimationFrame(enterAnim);
+      } else {
+        entered = true;
+      }
+    }
+    enterAnim();
+  },
+
+  // ── ON PROGRESS ──
+  (xhr) => {
+    const pct = xhr.total ? Math.round(xhr.loaded / xhr.total * 100) : '...';
+    const span = loadingDiv.querySelector('span');
+    if (span) span.textContent = `Loading ${pct}%`;
+  },
+
+  // ── ON ERROR ──
+  (err) => {
+    console.error('GLB load error:', err);
+    loadingDiv.innerHTML = `
+      <div style="color:rgba(255,45,120,0.8);font-family:'Space Grotesk',sans-serif;
+        font-size:0.65rem;letter-spacing:2px;text-align:center;line-height:1.8;">
+        ⚠ Model not found<br>
+        <span style="opacity:0.5;font-size:0.55rem">${MODEL_PATH}</span>
+      </div>`;
+  }
+);
+
+/* ══ ANIMATE ══ */
+function animate() {
+  requestAnimationFrame(animate);
+  const t = clock.getElapsedTime();
+
+  mouseX += (targetMouseX - mouseX) * 0.04;
+  mouseY += (targetMouseY - mouseY) * 0.04;
+
+  camera.position.x = mouseX * 1.2;
+  camera.position.y = 2 + mouseY * 0.8 - scrollY * 0.003;
+  camera.lookAt(new THREE.Vector3(2, 0, 0));
+
+  // Auto-rotate model + subtle mouse parallax tilt
+  if (modelGroup.children.length > 0) {
+    modelGroup.rotation.y += MODEL_ROTATION_SPEED;
+    modelGroup.rotation.x = mouseY * 0.05;
+  }
+
+  // Light animation
+  cyanLight.position.x = 8 + Math.sin(t * 0.5) * 3;
+  cyanLight.position.y = 6 + Math.cos(t * 0.4) * 2;
+  magentaLight.position.x = -8 + Math.cos(t * 0.6) * 3;
+  cyanLight.intensity = 70 + Math.sin(t * 1.5) * 20;
+  magentaLight.intensity = 45 + Math.cos(t * 1.8) * 15;
+
+  renderer.render(scene, camera);
+}
+animate();
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
+</script>
+
+<script type="module">
+import * as THREE from 'three';
 
 /* ══ SCENE SETUP ══ */
 const canvas = document.getElementById('hero-canvas');
